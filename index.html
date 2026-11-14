@@ -286,7 +286,7 @@ dialog.goods-dialog{width:min(470px,calc(100% - 40px));max-height:76dvh;border-r
 .plan-alert{border-left:3px solid var(--ink);background:#fffdfb;padding:6px 9px;margin:0 0 12px;font-size:.8rem}
 .timeline a,.day-help a,.friday-panel a{text-underline-offset:3px}
 .preview-friday{font-size:.76rem;margin-bottom:4px}
-.day-help{display:grid;gap:7px}
+.day-help{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;min-width:0}
 .day-help details{background:#fffdfb;border:1px solid var(--rule);border-radius:10px;padding:8px 11px;color:#392f37}
 .day-help summary{color:var(--ink);font-weight:700;cursor:pointer}
 .day-help p,.day-help li{font-size:.87rem}
@@ -336,20 +336,29 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
 .timeline > .drop-before .event::after{top:-4px}
 .timeline > .drop-after .event::after{bottom:0}
 
-.word-gallery-body{max-width:580px;margin:6px auto 0}
+.word-gallery-body{width:100%;max-width:580px;min-width:0;margin:6px auto 0}
 .word-jump{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:4px 0 8px}
 .word-jump button,.word-controls button{border:1px solid #d6a8ba;border-radius:8px;background:white;color:#80003c;min-height:40px;padding:4px 8px;font:700 .76rem system-ui;cursor:pointer}
 .word-jump button[aria-current]{background:#80003c;color:white}
-.word-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-inline:contain;scrollbar-width:none;background:#fff3f7;border:1px solid #e7c8d6;border-radius:10px}
+.word-track{display:flex;width:100%;min-width:0;max-width:100%;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-inline:contain;scrollbar-width:none;background:#fff3f7;border:1px solid #e7c8d6;border-radius:10px}
 .word-track::-webkit-scrollbar{display:none}
 .word-track figure{flex:0 0 100%;min-width:0;margin:0;scroll-snap-align:start;scroll-snap-stop:always;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.word-track img{display:block;width:100%;height:clamp(300px,62dvh,520px);object-fit:contain}
+.word-track img{display:block;width:100%;height:auto;max-height:520px;aspect-ratio:3/4;object-fit:contain}
 .word-track figcaption{font-size:.72rem;padding:3px;color:#633049}
 .word-controls{display:flex;align-items:center;justify-content:center;gap:14px;margin:6px 0 1px}
 .word-controls button{min-width:44px;min-height:44px;font-size:1.45rem}
 .word-controls button:disabled{opacity:.45}
 .word-count,.word-swipe-hint{text-align:center;color:#633049;font-size:.78rem}
 
+
+#info .day-help details{min-width:0;max-width:100%}
+#info .day-help p,#info .day-help a{overflow-wrap:anywhere}
+@media(max-width:480px){
+  .topbar nav a{white-space:normal;line-height:1.25}
+  #info .day-help details{padding:8px}
+  #info .word-jump{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  #info .word-jump button{min-width:0;white-space:normal}
+}
 </style>
 </head>
 <body>
