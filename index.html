@@ -231,6 +231,18 @@ dialog.playback-welcome{width:min(450px,calc(100% - 46px));max-height:min(72dvh,
 .playback-welcome .playback-nav{border-top:1px solid #eadce5;padding-top:5px}
 @media(min-width:620px){.meal-shop-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
+.meal-map.special-pins .meal-pin{width:44px;height:44px}
+.meal-map .grouped-pin span{width:auto;min-width:29px;padding:0 3px;border-radius:12px;opacity:1;font-size:.66rem;white-space:nowrap}
+.meal-map .active-pin span{background:white;color:var(--ink);border-color:var(--ink);box-shadow:0 0 0 2px white;opacity:1}
+.meal-detail{scroll-margin-top:45px}
+dialog.pin-chooser{position:fixed;inset:0;margin:auto;width:min(390px,calc(100% - 32px));height:fit-content;max-height:min(64dvh,460px);padding:0;border-radius:15px;background:#fffafa;color:#731142;box-shadow:0 10px 36px #30162f60;overflow:auto}
+dialog.pin-chooser[data-park=sea]{background:#f4fbff;color:#00446c}
+.pin-chooser::backdrop{background:#281e3a80}
+.pin-chooser form{position:sticky;top:0;background:inherit;gap:8px;padding:10px 12px;border-bottom:1px solid #7c65714a}
+.pin-chooser form button,.pin-choices button{color:inherit;background:white;border:1px solid #7c657180;min-height:44px;cursor:pointer}
+.pin-choices{padding:8px 12px 12px;display:grid;gap:6px}
+.pin-choices button{border-radius:8px;text-align:left;padding:7px 9px;font:700 .88rem/1.35 ZenMaru,system-ui,sans-serif}
+
 </style>
 </head>
 <body>
@@ -493,6 +505,27 @@ parks.forEach(day => {
   map.before(controls);
   originalMap.after(Object.assign(document.createElement('p'),{textContent:'地図の位置は目安です。店内・細かい位置は公式アプリで確認。'}));
 
+  const pinChooser = document.createElement('dialog');
+  pinChooser.className = 'pin-chooser';
+  pinChooser.setAttribute('aria-labelledby',day.id+'-pin-chooser-title');
+  pinChooser.innerHTML = `<form method="dialog">
+    <h2 id="${day.id}-pin-chooser-title">お店を選ぶ</h2><button>閉じる ×</button>
+    </form><div class="pin-choices"></div>`;
+  document.body.append(pinChooser);
+  let layoutPins;
+  let chosenFromGroup;
+  const choices = pinChooser.querySelector('.pin-choices');
+  pinChooser.addEventListener('close', () => {
+    if (chosenFromGroup) {
+      detail.querySelector('h3')?.focus({preventScroll:true});
+      detail.scrollIntoView({block:'start',behavior:'instant'});
+    }
+  });
+  const pinObserver = new ResizeObserver(() => {
+    if (map.clientWidth && layoutPins && !pinChooser.open) layoutPins();
+  });
+  pinObserver.observe(map);
+
   function renderMap(layer, selected) {
     const drinks = layer === 'drink';
     const mappedStores = drinkLocations.filter(place => place.mobile || place.id === Number(selected));
@@ -504,37 +537,105 @@ parks.forEach(day => {
     mapPanel.querySelector('.map-help').textContent = drinks
       ? '✦はスペシャルあり。モバオダ対応店を表示。'
       : '昼・夜の予定は番号付き。ピンや店名をタップすると、席数と主なメニュー・価格が見られます。';
+    mapPanel.querySelector('.map-help').append(' 「○店」のピンをタップすると、その周辺のお店を選べます。');
     controls.querySelectorAll('a').forEach(anchor => {
       if (anchor.dataset.layer === layer) anchor.setAttribute('aria-current','true');
       else anchor.removeAttribute('aria-current');
     });
     map.classList.add('special-pins');
-    map.querySelectorAll('.meal-pin').forEach(pin => pin.remove());
-    const pinButtons = places.map((place,i) => {
-      const pin = document.createElement('button');
-      pin.type='button';
-      pin.className='meal-pin'+(!drinks && place.time ? ' planned-pin' : '');
-      pin.dataset.place=place.id;
-      pin.setAttribute('aria-label',place.name);
-      pin.style.left=place.x/12+'%';
-      pin.style.top=place.y/8.4848+'%';
-      pin.innerHTML=`<span>${drinks ? (specialAt(place.id).length ? '✦' : '•') : (place.time ? i+1 : '•')}</span>`;
-      map.append(pin);
-      return pin;
-    });
+    const marker = place => drinks
+      ? (specialAt(place.id).length ? '✦' : '•')
+      : (place.time ? plans.indexOf(place)+1 : '•');
+    let activePlace = initial;
+    function markSelection() {
+      map.querySelectorAll('.meal-pin').forEach(pin => {
+        const active = pin.dataset.places.split(',').includes(String(activePlace.id));
+        pin.classList.toggle('active-pin',active);
+        if (!pin.hasAttribute('aria-haspopup')) pin.setAttribute('aria-pressed',String(active));
+      });
+      picker.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed',
+        String(Number(button.dataset.place)===activePlace.id)));
+    }
+
+    function chooseFrom(group) {
+      chosenFromGroup = false;
+      choices.replaceChildren();
+      group.forEach(place => {
+        const button=document.createElement('button');
+        button.type='button';
+        button.textContent = [place.time ? place.role : '', marker(place)==='✦' ? '✦' : '',place.name]
+          .filter(Boolean).join(' ');
+        button.addEventListener('click', () => {
+          chosenFromGroup = true;
+          select(place);
+          pinChooser.close();
+        });
+        choices.append(button);
+      });
+      pinChooser.dataset.park = day.id;
+      pinChooser.showModal();
+    }
+
+    layoutPins = () => {
+      if (!map.clientWidth || !map.clientHeight) return;
+      const {clientWidth:width,clientHeight:height} = map;
+      const groups = places.map(place => ({places:[place],x:place.x,y:place.y}));
+      // Merge overlapping 44px tap targets using the rendered size of the map.
+      for (let i=0;i<groups.length;i++) {
+        const a = groups[i];
+        const j = groups.findIndex((b,k) => k>i &&
+          Math.abs(a.x-b.x)*width/1200<46 && Math.abs(a.y-b.y)*height/848.48<46);
+        if (j===-1) continue;
+        a.places.push(...groups[j].places);
+        const average = axis => a.places.reduce((sum,place)=>sum+place[axis],0)/a.places.length;
+        const planned = a.places.find(place=>!drinks && place.time);
+        a.x=planned?.x ?? average('x');
+        a.y=planned?.y ?? average('y');
+        groups.splice(j,1);
+        i=-1;
+      }
+      map.querySelectorAll('.meal-pin').forEach(pin => pin.remove());
+      groups.forEach(group => {
+        const pin = document.createElement('button');
+        const first = group.places[0];
+        const multiple = group.places.length>1;
+        pin.type='button';
+        pin.className='meal-pin'+(multiple ? ' grouped-pin' : '')+
+          (group.places.some(place=>!drinks && place.time) ? ' planned-pin' : '');
+        pin.dataset.places=group.places.map(place=>place.id).join(',');
+        pin.setAttribute('aria-label',multiple ? `近くの${group.places.length}店を選ぶ：${first.name}ほか` : first.name);
+        if (multiple) pin.setAttribute('aria-haspopup','dialog');
+        pin.style.left=group.x/12+'%';
+        pin.style.top=group.y/8.4848+'%';
+        const special = drinks && group.places.some(place=>marker(place)==='✦');
+        const planLabels = group.places.filter(place=>!drinks && place.time).map(marker);
+        const prefix = special ? '✦' : (planLabels.length ? planLabels.join('・')+'／' : '');
+        pin.innerHTML=multiple ? `<span>${prefix}${group.places.length}店</span>` : `<span>${marker(first)}</span>`;
+        pin.addEventListener('click', () => {
+          if (multiple) chooseFrom(group.places);
+          else {
+            select(first);
+            detail.scrollIntoView({block:'nearest',behavior:'instant'});
+          }
+        });
+        map.append(pin);
+      });
+      markSelection();
+    };
     picker.hidden = drinks;
     const shopCards = rows => rows.map(shop=>`<button type="button" data-place="${shop.id}" class="${shop.time ? 'is-plan' : ''}"><span class="shop-num">${shop.time ? plans.indexOf(shop)+1 : '•'}</span><span><small>${[shop.role,shop.time,shop.seats].filter(Boolean).join(' · ') || shop.area}</small>${shop.name}</span></button>`).join('');
     picker.innerHTML=drinks ? '' : `<div class="meal-groups"><div><h3>行く予定のお店</h3><div class="meal-shop-grid">${shopCards(plans)}</div></div>
       <div><h3>夕食の予備</h3><div class="meal-shop-grid">${shopCards(backups)}</div></div>
       <details class="meal-more"><summary>ほかのモバオダ対応店（${meals.length-plans.length-backups.length}店）</summary><div class="meal-shop-grid">${shopCards(meals.filter(meal=>!meal.role))}</div></details></div>`;
-    const items = drinks ? pinButtons : [...pinButtons,...picker.querySelectorAll('button')];
+    const items = picker.querySelectorAll('button');
     function select(place) {
-      items.forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.place)===place.id)));
+      activePlace = place;
+      markSelection();
       const food = drinks ? null : place;
       const foodUrl = food?.menuUrl;
       const drinkStore = food && drinkLocations.find(store=>store.id===food.drinkId);
       const seats = food ? `<p class="seat-line">席数：${food.seats || '公式の記載なし'} ${food.seatUrl ? `<a href="${food.seatUrl}" target="_blank" rel="noopener">店舗情報 ↗</a>` : ''}</p>` : '';
-      detail.innerHTML = `<div class="meal-name"><p>${drinks ? (place.mobile ? 'モバオダ対応店' : 'モバオダ非対応店') : [place.role,place.time,place.area].filter(Boolean).join(' · ')}</p><h3>${place.name}</h3>${seats}</div>
+      detail.innerHTML = `<div class="meal-name"><p>${drinks ? (place.mobile ? 'モバオダ対応店' : 'モバオダ非対応店') : [place.role,place.time,place.area].filter(Boolean).join(' · ')}</p><h3 tabindex="-1">${place.name}</h3>${seats}</div>
         <div class="place-detail">${drinks ? drinksAt(place) :
           `<div class="meal-body${food.photo ? '' : ' no-photo'}">${photo(food.photo,food.menu[0]?.[0] || food.name,foodUrl)}
           ${food.menu.length ? `<dl class="food-items">${food.menu.map(([item,price])=>`<div><dt>${item}</dt><dd>${price}</dd></div>`).join('')}</dl>` : '<p>ドリンク中心のお店です。詳しくは公式メニューへ。</p>'}</div>
@@ -548,6 +649,7 @@ parks.forEach(day => {
       detail.scrollIntoView({block:'nearest',behavior:'instant'});
     }));
     select(initial);
+    layoutPins();
     if (!drinks && selected && !initial.role) picker.querySelector('.meal-more').open=true;
   }
   day.renderMap = renderMap;
