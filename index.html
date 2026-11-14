@@ -243,6 +243,14 @@ dialog.pin-chooser[data-park=sea]{background:#f4fbff;color:#00446c}
 .pin-choices{padding:8px 12px 12px;display:grid;gap:6px}
 .pin-choices button{border-radius:8px;text-align:left;padding:7px 9px;font:700 .88rem/1.35 ZenMaru,system-ui,sans-serif}
 
+
+.pinch-map{overflow:hidden;touch-action:pan-y;overscroll-behavior-x:contain;border-radius:10px}
+.pinch-map.zoomed{overflow:auto;touch-action:none}
+.pinch-map>.meal-map{max-width:none;margin:0}
+.pinch-map .meal-map>img{-webkit-user-drag:none;user-select:none}
+.map-zoom{display:flex;gap:6px;justify-content:flex-end;margin-top:6px}
+.map-zoom button{background:white;color:var(--ink);border:1px solid var(--rule);border-radius:8px;min-width:44px;min-height:44px;padding:0 8px;font-weight:700;cursor:pointer}
+.map-zoom button:disabled{opacity:.55;cursor:default}
 </style>
 </head>
 <body>
@@ -487,6 +495,95 @@ parks.forEach(day => {
   const mapPanel = day.querySelector('.map');
   const map = day.querySelector('.meal-map');
   const originalMap = mapPanel.querySelector('.map-preview');
+  const viewport = document.createElement('div');
+  viewport.className = 'pinch-map';
+  map.before(viewport);
+  viewport.append(map);
+  const zoomBar = document.createElement('div');
+  zoomBar.className = 'map-zoom';
+  zoomBar.innerHTML = '<button type="button" aria-label="地図を縮小">−</button><button type="button" aria-label="地図を拡大">＋</button><button type="button">全体に戻す</button>';
+  viewport.after(zoomBar);
+  const [zoomOut,zoomIn,resetZoom] = zoomBar.querySelectorAll('button');
+  let zoom = 1;
+  let gesture;
+  let suppressTap = false;
+  let releaseTap;
+
+  function changeZoom(next, anchorX, anchorY, x=anchorX, y=anchorY) {
+    const bounded = Math.max(1,Math.min(7,next));
+    const mapX = (viewport.scrollLeft+anchorX)/zoom;
+    const mapY = (viewport.scrollTop+anchorY)/zoom;
+    if (zoom === 1 && bounded > 1) {
+      viewport.style.height = viewport.clientHeight+'px';
+    }
+    zoom = bounded;
+    map.style.width = zoom*100+'%';
+    viewport.classList.toggle('zoomed',zoom>1);
+    if (zoom === 1) viewport.style.removeProperty('height');
+    viewport.scrollLeft = mapX*zoom-x;
+    viewport.scrollTop = mapY*zoom-y;
+    zoomOut.disabled = resetZoom.disabled = zoom===1;
+    zoomIn.disabled = zoom===7;
+  }
+
+  function centerZoom(next) {
+    changeZoom(next,viewport.clientWidth/2,viewport.clientHeight/2);
+  }
+  zoomOut.addEventListener('click',()=>centerZoom(zoom/1.6));
+  zoomIn.addEventListener('click',()=>centerZoom(zoom*1.6));
+  resetZoom.addEventListener('click',()=>centerZoom(1));
+  zoomOut.disabled = resetZoom.disabled = true;
+
+  function touchPosition(touches) {
+    const [a,b] = touches;
+    const rect = viewport.getBoundingClientRect();
+    return b ? {
+      x:(a.clientX+b.clientX)/2-rect.left, y:(a.clientY+b.clientY)/2-rect.top,
+      distance:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)
+    } : {x:a.clientX-rect.left,y:a.clientY-rect.top};
+  }
+  viewport.addEventListener('touchstart',event=>{
+    if (event.touches.length===2 || (event.touches.length===1 && zoom>1)) {
+      clearTimeout(releaseTap);
+      suppressTap=false;
+      gesture=touchPosition(event.touches);
+      gesture.count=event.touches.length;
+    }
+  },{passive:true});
+  viewport.addEventListener('touchmove',event=>{
+    const count=event.touches.length;
+    if (count!==2 && (count!==1 || zoom===1 || !gesture)) return;
+    const next=touchPosition(event.touches);
+    next.count=count;
+    if (!gesture || gesture.count!==count) { gesture=next; return; }
+    if (count===1 && !suppressTap && Math.hypot(next.x-gesture.x,next.y-gesture.y)<5) return;
+    if (event.cancelable) event.preventDefault();
+    suppressTap=true;
+    if (count===2 && gesture.distance>0) {
+      changeZoom(zoom*next.distance/gesture.distance,gesture.x,gesture.y,next.x,next.y);
+    } else {
+      viewport.scrollLeft += gesture.x-next.x;
+      viewport.scrollTop += gesture.y-next.y;
+    }
+    gesture=next;
+  },{passive:false});
+  function stopTouch(event) {
+    if (event.touches.length===1 && zoom>1) {
+      gesture={...touchPosition(event.touches),count:1};
+    } else {
+      gesture=undefined;
+      if (suppressTap) {
+        releaseTap=setTimeout(()=>{suppressTap=false;},200);
+        if (layoutPins) layoutPins();
+      }
+    }
+  }
+  viewport.addEventListener('touchend',stopTouch);
+  viewport.addEventListener('touchcancel',stopTouch);
+  viewport.addEventListener('click',event=>{
+    if (suppressTap) { event.preventDefault(); event.stopPropagation(); }
+  },true);
+
   const image = originalMap.querySelector('img').cloneNode();
   map.append(image);
   const picker = day.querySelector('.meal-picker');
@@ -522,11 +619,12 @@ parks.forEach(day => {
     }
   });
   const pinObserver = new ResizeObserver(() => {
-    if (map.clientWidth && layoutPins && !pinChooser.open) layoutPins();
+    if (map.clientWidth && layoutPins && !pinChooser.open && !gesture) layoutPins();
   });
   pinObserver.observe(map);
 
   function renderMap(layer, selected) {
+    if (zoom !== 1) centerZoom(1);
     const drinks = layer === 'drink';
     const mappedStores = drinkLocations.filter(place => place.mobile || place.id === Number(selected));
     const plans = shops.slice(0,2).map(shop => meals.find(meal => meal.id === shop.id));
@@ -537,7 +635,7 @@ parks.forEach(day => {
     mapPanel.querySelector('.map-help').textContent = drinks
       ? '✦はスペシャルあり。モバオダ対応店を表示。'
       : '昼・夜の予定は番号付き。ピンや店名をタップすると、席数と主なメニュー・価格が見られます。';
-    mapPanel.querySelector('.map-help').append(' 「○店」のピンをタップすると、その周辺のお店を選べます。');
+    mapPanel.querySelector('.map-help').append(' ピンチや＋で拡大すると、近いピンを押し分けられます。');
     controls.querySelectorAll('a').forEach(anchor => {
       if (anchor.dataset.layer === layer) anchor.setAttribute('aria-current','true');
       else anchor.removeAttribute('aria-current');
