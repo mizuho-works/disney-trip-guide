@@ -326,6 +326,16 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
 .edit-dialog .welcome-footer{justify-content:flex-end}
 .edit-dialog button[type=submit]{min-width:100px}
 
+.order-grip{display:none}
+.reordering .order-grip{display:inline-grid;place-items:center;min-height:44px;min-width:44px;padding:0;margin:4px 5px 0 0;border:1px solid var(--rule);border-radius:8px;background:#fffdfb;color:var(--ink);font:700 1.05rem/1 system-ui,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.reordering .order-grip:active{cursor:grabbing}
+.quick-edit-tools [aria-pressed=true]{background:var(--ink);color:white}
+.timeline > .dragging-row .event{opacity:.45}
+.timeline > .drop-before .event,.timeline > .drop-after .event{position:relative}
+.timeline > .drop-before .event::after,.timeline > .drop-after .event::after{content:"";position:absolute;left:0;right:0;height:3px;border-radius:3px;background:var(--ink);box-shadow:0 0 0 2px #fffdfb;pointer-events:none}
+.timeline > .drop-before .event::after{top:-4px}
+.timeline > .drop-after .event::after{bottom:0}
+
 </style>
 </head>
 <body>
@@ -553,6 +563,95 @@ const shareField=shareDialog.querySelector('input');
 const shareStatus=shareDialog.querySelector('[role=status]');
 let editingId;
 
+function enableReordering(section, tools) {
+  const list=section.planList;
+  const toggle=tools.querySelector('[data-plan-reorder]');
+  const status=tools.querySelector('.quick-edit-status');
+  let drag;
+
+  function setHint() {
+    status.textContent=list.classList.contains('reordering') ? '☰ をつかんで上下へ。指を離すと保存。' : '';
+  }
+  toggle.addEventListener('click',()=>{
+    const on=list.classList.toggle('reordering');
+    toggle.setAttribute('aria-pressed',String(on));
+    toggle.textContent=on?'並べ替え完了':'並べ替え';
+    setHint();
+  });
+
+  function moveRow(from,to,restoreFocus=false) {
+    const entries=[...entriesFor(section)];
+    if(from===to || to<0 || to>=entries.length) return;
+    const [entry]=entries.splice(from,1);
+    entries.splice(to,0,entry);
+    planChanges[section.id]=entries;
+    applyChanges(section);
+    decorate(section);
+    try {localStorage.setItem(planKey,savedData());} catch {}
+    status.textContent=entry.title+'を'+(to+1)+'番目に移動しました';
+    if(restoreFocus) list.children[to]?.querySelector('.order-grip')?.focus();
+  }
+
+  function updateTarget() {
+    const rows=[...list.children];
+    const others=rows.filter(row=>row!==drag.row);
+    const before=others.find(row=>{
+      const rect=row.getBoundingClientRect();
+      return drag.y < rect.top+Math.min(rect.height/2,48);
+    });
+    drag.to=before ? others.indexOf(before) : others.length;
+    const indicator=before || others.at(-1);
+    if(drag.indicator!==indicator) drag.indicator?.classList.remove('drop-before','drop-after');
+    drag.indicator=indicator;
+    indicator?.classList.toggle('drop-before',Boolean(before));
+    indicator?.classList.toggle('drop-after',!before);
+  }
+
+  function scrollNearEdge() {
+    if(!drag) return;
+    const height=window.visualViewport?.height || window.innerHeight;
+    const edge=65;
+    if(drag.y<edge) window.scrollBy(0,-Math.min(14,(edge-drag.y)/3));
+    else if(drag.y>height-edge) window.scrollBy(0,Math.min(14,(drag.y-height+edge)/3));
+    updateTarget();
+    drag.frame=requestAnimationFrame(scrollNearEdge);
+  }
+  list.addEventListener('pointerdown',event=>{
+    const grip=event.target.closest('.order-grip');
+    if(!grip || drag || event.button!==0 || list.children.length<2) return;
+    const row=grip.closest('li');
+    const from=[...list.children].indexOf(row);
+    drag={id:event.pointerId,row,from,to:from,y:event.clientY,start:event.clientY};
+    list.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  });
+  list.addEventListener('pointermove',event=>{
+    if(drag?.id!==event.pointerId) return;
+    drag.y=event.clientY;
+    if(!drag.frame && Math.abs(drag.y-drag.start)>=5) {
+      drag.row.classList.add('dragging-row');
+      scrollNearEdge();
+    }
+  });
+  function finish(event) {
+    if(drag?.id!==event.pointerId) return;
+    const {from,to,indicator,row,frame}=drag;
+    drag=undefined;
+    cancelAnimationFrame(frame);
+    row.classList.remove('dragging-row');
+    indicator?.classList.remove('drop-before','drop-after');
+    if(frame && event.type==='pointerup') moveRow(from,to);
+  }
+  for(const type of ['pointerup','pointercancel','lostpointercapture']) list.addEventListener(type,finish);
+  list.addEventListener('keydown',event=>{
+    const grip=event.target.closest('.order-grip');
+    if(!grip || !['ArrowUp','ArrowDown'].includes(event.key)) return;
+    event.preventDefault();
+    const from=[...list.children].indexOf(grip.closest('li'));
+    moveRow(from,from+(event.key==='ArrowUp'?-1:1),true);
+  });
+}
+
 function entriesFor(section) {
   return planChanges[section.id] || section.planOriginals.map(({id,time,title,note})=>({id,time,title,note}));
 }
@@ -584,7 +683,12 @@ function decorate(section) {
     button.textContent='編集';
     button.setAttribute('aria-label',entries[index].title+'を編集');
     button.addEventListener('click',()=>openEditor(section,entries[index].id));
-    row.querySelector('.event').append(button);
+    const grip=document.createElement('button');
+    grip.type='button';
+    grip.className='order-grip';
+    grip.textContent='☰';
+    grip.setAttribute('aria-label',entries[index].title+'の順番を変更。上下の矢印キーでも移動できます。');
+    row.querySelector('.event').append(grip,button);
   });
   section.querySelector('[data-plan-add]').disabled=entries.length>=60;
 }
@@ -651,10 +755,11 @@ function openShare(section) {
 planSections.forEach(section=>{
   const tools=document.createElement('div');
   tools.className='quick-edit-tools';
-  tools.innerHTML='<button type="button" data-plan-add>＋ 予定を追加</button><button type="button" data-plan-share>予定を共有</button><span class="quick-edit-status" role="status"></span>';
+  tools.innerHTML='<button type="button" data-plan-add>＋ 予定を追加</button><button type="button" data-plan-reorder aria-pressed="false">並べ替え</button><button type="button" data-plan-share>予定を共有</button><span class="quick-edit-status" role="status"></span>';
   tools.querySelector('[data-plan-add]').addEventListener('click',()=>openEditor(section));
   tools.querySelector('[data-plan-share]').addEventListener('click',()=>openShare(section));
   section.planList.before(tools);
+  enableReordering(section,tools);
   decorate(section);
 });
 const nativeShare=shareDialog.querySelector('[data-native-share]');
