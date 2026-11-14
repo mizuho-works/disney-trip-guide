@@ -315,6 +315,17 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
 .edit-plan{margin:0 0 8px}
 .edit-dialog .welcome-footer{align-items:center;gap:5px}
 .edit-dialog .welcome-footer p:empty{display:none}
+.quick-edit-tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
+.quick-edit-tools button,.quick-edit-row{border:1px solid var(--rule);border-radius:7px;background:#fffdfb;color:var(--ink);min-height:40px;padding:4px 9px;font:700 .78rem/1.2 system-ui,sans-serif;cursor:pointer}
+.quick-edit-row{margin-top:5px}
+.quick-edit-status{font-size:.78rem}
+.edit-fields label{margin-bottom:8px}
+.edit-fields summary{cursor:pointer;color:#80003c;font-size:.8rem}
+.edit-fields select{display:block;width:100%;min-height:40px;background:white;border:1px solid #c99eb3;border-radius:6px;color:#322631;margin-top:3px;font:16px system-ui,sans-serif}
+.edit-delete-confirm{padding-top:6px;font-size:.82rem}
+.edit-dialog .welcome-footer{justify-content:flex-end}
+.edit-dialog button[type=submit]{min-width:100px}
+
 </style>
 </head>
 <body>
@@ -431,27 +442,37 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
 
 <dialog id="edit-plan" class="welcome edit-dialog" aria-labelledby="edit-title">
   <form class="welcome-card">
-    <div class="welcome-head"><h2 id="edit-title">予定を編集</h2><button type="button" data-edit-close aria-label="閉じる">閉じる ×</button></div>
-    <div class="welcome-scroll edit-scroll">
-      <p>時間・行き先・メモを編集できます。順番は「上へ」「下へ」で変更できます。</p>
-      <div class="edit-rows"></div>
-      <button type="button" data-add>＋ 予定を追加</button>
-      <div class="edit-share" hidden><label>共有リンク<input type="url" readonly></label><button type="button" data-copy>リンクをコピー</button> <button type="button" data-native-share hidden>共有する</button></div>
+    <div class="welcome-head"><h2 id="edit-title">予定を編集</h2><button type="button" data-edit-close>キャンセル</button></div>
+    <div class="welcome-scroll edit-scroll edit-fields">
+      <label>時間・目安<input name="time" maxlength="35" placeholder="例 13:30"></label>
+      <label>予定<input name="title" maxlength="110" required></label>
+      <label>メモ<textarea name="note" maxlength="360" rows="2"></textarea></label>
+      <details><summary>順番の変更・削除</summary>
+        <label>入れる位置<select name="position"></select></label>
+        <button type="button" data-delete>この予定を削除</button>
+        <div class="edit-delete-confirm" hidden><p>この予定を削除しますか？</p><button type="button" data-confirm-delete>削除する</button> <button type="button" data-cancel-delete>残す</button></div>
+      </details>
     </div>
-    <div class="welcome-footer"><p class="edit-status" aria-live="polite"></p><button type="submit">保存して共有リンクを作る</button></div>
+    <div class="welcome-footer"><button type="submit">保存</button></div>
+  </form>
+</dialog>
+<dialog id="share-plan" class="welcome edit-dialog" aria-labelledby="share-plan-title">
+  <form method="dialog" class="welcome-card">
+    <div class="welcome-head"><h2 id="share-plan-title">予定を共有</h2><button>閉じる</button></div>
+    <div class="welcome-scroll edit-scroll">
+      <p>このリンクを送ると、相手も今の予定を開けます。</p>
+      <label>共有リンク<input type="url" readonly></label>
+      <button type="button" data-copy>リンクをコピー</button> <button type="button" data-native-share hidden>共有する</button>
+      <p role="status"></p>
+    </div>
   </form>
 </dialog>
 
 <script>
 const editDialog=document.querySelector('#edit-plan');
-const editRows=editDialog.querySelector('.edit-rows');
-const editStatus=editDialog.querySelector('.edit-status');
-const shareBox=editDialog.querySelector('.edit-share');
-const shareField=shareBox.querySelector('input');
 const planKey='disney-guide-edited-plan-v1';
 const planSections=['friday','land','sea'].map(id=>document.querySelector('#'+id));
 let editSection;
-let activeDraft=[];
 let planChanges={};
 
 function rowValues(row) {
@@ -522,99 +543,133 @@ try {
 } catch {}
 planSections.forEach(applyChanges);
 
-function drawEditor() {
-  editRows.replaceChildren(...activeDraft.map((entry,index)=>{
-    const field=document.createElement('fieldset');
-    field.innerHTML='<legend></legend><label>時間・目安<input name="time" maxlength="35"></label><label>予定<input name="title" maxlength="110" required></label><label>メモ<textarea name="note" maxlength="360" rows="2"></textarea></label><div class="edit-row-actions"><button type="button" data-move="-1">↑ 上へ</button><button type="button" data-move="1">↓ 下へ</button><button type="button" data-delete>削除</button></div>';
-    field.querySelector('legend').textContent='予定 '+(index+1);
-    for(const key of ['time','title','note']) {
-      const input=field.querySelector('[name='+key+']');
-      input.value=entry[key];
-      input.addEventListener('input',()=>{entry[key]=input.value;});
-    }
-    field.querySelector('[data-move="-1"]').disabled=index===0;
-    field.querySelector('[data-move="1"]').disabled=index===activeDraft.length-1;
-    field.querySelector('[data-delete]').disabled=activeDraft.length===1;
-    field.querySelector('.edit-row-actions').addEventListener('click',event=>{
-      const button=event.target.closest('button');
-      if(!button) return;
-      if(button.hasAttribute('data-delete')) activeDraft.splice(index,1);
-      else {
-        const offset=Number(button.dataset.move);
-        [activeDraft[index],activeDraft[index+offset]]=[activeDraft[index+offset],activeDraft[index]];
-      }
-      drawEditor();
-    });
-    return field;
-  }));
+const form=editDialog.querySelector('form');
+const fields=form.querySelector('.edit-fields');
+const position=form.elements.position;
+const removeButton=form.querySelector('[data-delete]');
+const confirmDelete=form.querySelector('.edit-delete-confirm');
+const shareDialog=document.querySelector('#share-plan');
+const shareField=shareDialog.querySelector('input');
+const shareStatus=shareDialog.querySelector('[role=status]');
+let editingId;
+
+function entriesFor(section) {
+  return planChanges[section.id] || section.planOriginals.map(({id,time,title,note})=>({id,time,title,note}));
 }
-function openEditor(section) {
+function openEditor(section, id) {
   editSection=section;
-  activeDraft=(planChanges[section.id]||section.planOriginals).map(({id,time,title,note})=>({id,time,title,note}));
-  editDialog.querySelector('#edit-title').textContent='予定を編集 · '+section.dataset.editLabel;
-  editStatus.textContent='';
-  shareBox.hidden=true;
-  drawEditor();
+  editingId=id;
+  const entries=entriesFor(section);
+  const index=entries.findIndex(item=>item.id===id);
+  const item=entries[index] || {time:'',title:'',note:''};
+  for(const key of ['time','title','note']) form.elements[key].value=item[key];
+  position.replaceChildren(new Option('いちばん上',0),...entries
+    .filter(entry=>entry.id!==id)
+    .map((entry,i)=>new Option(entry.title+' のあと',i+1)));
+  position.value=String(index<0 ? entries.length : index);
+  fields.querySelector('details').open=false;
+  confirmDelete.hidden=true;
+  removeButton.hidden=!id || entries.length===1;
+  form.querySelector('[type=submit]').textContent=id ? '保存' : '追加';
+  editDialog.querySelector('#edit-title').textContent=id ? '予定を編集' : '予定を追加';
+  editDialog.returnValue='';
   editDialog.showModal();
-  editDialog.querySelector('.edit-scroll').scrollTop=0;
 }
-planSections.forEach(section=>{
-  const button=document.createElement('button');
-  button.className='edit-plan';
-  button.type='button';
-  button.textContent='予定を編集';
-  button.setAttribute('aria-haspopup','dialog');
-  button.addEventListener('click',()=>openEditor(section));
-  section.querySelector('.order').before(button);
-});
-editDialog.querySelector('[data-add]').addEventListener('click',()=>{
-  if(activeDraft.length>=60) return;
-  activeDraft.push({id:'new-'+Date.now(),time:'',title:'',note:''});
-  drawEditor();
-  editRows.lastElementChild.querySelector('[name=title]').focus();
-});
-editDialog.querySelector('[data-edit-close]').addEventListener('click',()=>editDialog.close());
-editDialog.querySelector('form').addEventListener('submit',event=>{
-  event.preventDefault();
-  const invalid=activeDraft.findIndex(entry=>!entry.title.trim());
-  if(invalid>=0) {
-    editStatus.textContent='予定の名前を入力してください。';
-    editRows.children[invalid].querySelector('[name=title]').focus();
-    return;
-  }
-  planChanges[editSection.id]=activeDraft.map(entry=>({...entry,title:entry.title.trim()}));
-  applyChanges(editSection);
-  const data=JSON.stringify(Object.fromEntries(planSections
+function decorate(section) {
+  const entries=entriesFor(section);
+  Array.from(section.planList.children).forEach((row,index)=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='quick-edit-row';
+    button.textContent='編集';
+    button.setAttribute('aria-label',entries[index].title+'を編集');
+    button.addEventListener('click',()=>openEditor(section,entries[index].id));
+    row.querySelector('.event').append(button);
+  });
+  section.querySelector('[data-plan-add]').disabled=entries.length>=60;
+}
+
+function savedData() {
+  return JSON.stringify(Object.fromEntries(planSections
     .filter(section=>planChanges[section.id])
     .map(section=>[section.id,planChanges[section.id].map(entry=>{
       const original=section.planOriginals.find(item=>item.id===entry.id);
       return Object.fromEntries(Object.entries(entry).filter(([key,value])=>key==='id'||value!==original?.[key]));
     })])));
-  try{localStorage.setItem(planKey,data);}catch{}
+}
+function saveEdits(entries, focusId) {
+  planChanges[editSection.id]=entries;
+  applyChanges(editSection);
+  decorate(editSection);
+  try {localStorage.setItem(planKey,savedData());} catch {}
+  editDialog.close();
+  editSection.querySelector('.quick-edit-status').textContent='予定を保存しました';
+  const rowIndex=entries.findIndex(entry=>entry.id===focusId);
+  const target=editSection.planList.children[rowIndex]?.querySelector('.quick-edit-row')
+    || editSection.querySelector('[data-plan-add]');
+  target.focus({preventScroll:true});
+  if(rowIndex>=0) target.scrollIntoView({block:'nearest'});
+}
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  const title=form.elements.title.value.trim();
+  if(!title) {
+    form.elements.title.value='';
+    form.elements.title.reportValidity();
+    return;
+  }
+  const entries=entriesFor(editSection).filter(entry=>entry.id!==editingId);
+  const item={id:editingId || 'new-'+Date.now(),time:form.elements.time.value.trim(),title,note:form.elements.note.value.trim()};
+  entries.splice(Number(position.value),0,item);
+  saveEdits(entries,item.id);
+});
+removeButton.addEventListener('click',()=>{
+  confirmDelete.hidden=false;
+  confirmDelete.querySelector('[data-confirm-delete]').focus();
+});
+confirmDelete.querySelector('[data-confirm-delete]').addEventListener('click',()=>{
+  const entries=entriesFor(editSection);
+  if(entries.length>1) saveEdits(entries.filter(item=>item.id!==editingId));
+});
+confirmDelete.querySelector('[data-cancel-delete]').addEventListener('click',()=>{
+  confirmDelete.hidden=true;
+  removeButton.focus();
+});
+form.querySelector('[data-edit-close]').addEventListener('click',()=>editDialog.close());
+
+function openShare(section) {
   const url=new URL(location.href);
-  const bytes=new TextEncoder().encode(data);
+  const bytes=new TextEncoder().encode(savedData());
   let binary='';
   for(const byte of bytes) binary+=String.fromCharCode(byte);
   const encoded=btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-  url.hash=editSection.id+'?plan='+encoded;
+  url.hash=section.id+'?plan='+encoded;
   shareField.value=url.href;
-  shareBox.hidden=false;
-  editStatus.textContent='保存しました。下のリンクで編集した予定を共有できます。';
-  shareBox.scrollIntoView({block:'nearest'});
+  shareStatus.textContent='';
+  shareDialog.showModal();
+}
+planSections.forEach(section=>{
+  const tools=document.createElement('div');
+  tools.className='quick-edit-tools';
+  tools.innerHTML='<button type="button" data-plan-add>＋ 予定を追加</button><button type="button" data-plan-share>予定を共有</button><span class="quick-edit-status" role="status"></span>';
+  tools.querySelector('[data-plan-add]').addEventListener('click',()=>openEditor(section));
+  tools.querySelector('[data-plan-share]').addEventListener('click',()=>openShare(section));
+  section.planList.before(tools);
+  decorate(section);
 });
-const editShare=editDialog.querySelector('[data-native-share]');
-editShare.hidden=!navigator.share;
-editShare.addEventListener('click',async()=>{
+const nativeShare=shareDialog.querySelector('[data-native-share]');
+nativeShare.hidden=!navigator.share;
+nativeShare.addEventListener('click',async()=>{
   try {await navigator.share({title:'ディズニー旅行のしおり',url:shareField.value});} catch {}
 });
-editDialog.querySelector('[data-copy]').addEventListener('click',async()=>{
+shareDialog.querySelector('[data-copy]').addEventListener('click',async()=>{
   try {
     await navigator.clipboard.writeText(shareField.value);
-    editStatus.textContent='リンクをコピーしました。LINEなどに貼り付けて送れます。';
+    shareStatus.textContent='リンクをコピーしました';
   } catch {
     shareField.focus();
     shareField.select();
-    editStatus.textContent='選択したリンクをコピーしてください。';
+    shareStatus.textContent='選んだリンクをコピーしてください';
   }
 });
 
