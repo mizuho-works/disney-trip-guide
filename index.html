@@ -16,6 +16,23 @@ main{max-width:820px;margin:auto;padding:14px} .day{--paper:#ffe5ed;--ink:#80003
 .order{background:#fffdfaf0;border:1px solid var(--rule);border-radius:15px;padding:14px 16px;margin-bottom:22px} h2,h3{font-family:ZenMaru,system-ui,sans-serif} h2{font-size:1.14rem} h3{font-size:1rem;line-height:1.55;overflow-wrap:anywhere} .order p,.order li,.timeline p{font-size:.9rem;color:#392f37} .order ul{padding-left:1.2rem;margin:6px 0} .note{margin-top:6px}
 .timeline{list-style:none;margin:0 0 26px;padding:0} .timeline li{display:grid;grid-template-columns:clamp(76px,23vw,127px) 1fr;position:relative;gap:15px} .timeline li::before{content:"";position:absolute;top:11px;bottom:-11px;left:clamp(76px,23vw,127px);width:1px;background:var(--ink)} .timeline li:last-child::before{display:none} .time{font-size:.83rem;line-height:1.35;font-weight:700;padding:4px 8px 0 0} .event{position:relative;padding:0 0 16px} .event::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--ink);position:absolute;top:7px;left:-19px} .timeline p{margin-top:3px} .tag{font-size:.69rem;display:inline-block;font-weight:700;background:var(--ink);color:white;padding:0 6px;margin-right:5px;border-radius:4px;vertical-align:2px}
 .map h2{margin-bottom:5px}.map-preview{display:block;width:100%;padding:0;border:1px solid var(--rule);border-radius:12px;overflow:hidden;cursor:zoom-in;background:var(--paper);font:inherit;color:var(--ink)} .map-preview img{display:block;width:100%;height:auto} .map-preview span{display:block;background:#fffdfb;padding:8px} .map p{font-size:.78rem;margin-top:8px} dialog{margin:0;max-width:none;max-height:none;width:100%;height:100%;border:0;background:#252028;color:white;padding:0} dialog form{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px} dialog button{border:0;border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer} .map-scroll{height:calc(100dvh - 66px);overflow:auto} .map-scroll img{width:max(100%,980px);display:block} footer{text-align:center;font-size:.8rem;margin:20px;color:#5f515a}
+.route-player{margin:0 0 22px;border:1px solid var(--rule);border-radius:15px;padding:14px 16px;background:#fffdfaf5}
+.route-player[hidden],.route-pin[hidden]{display:none}
+.route-head,.route-controls,.route-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.route-head{justify-content:space-between}.route-head span{font-size:.79rem;font-weight:700}
+.route-card{min-height:116px;margin:9px 0;background:var(--paper);padding:12px;border-radius:10px}
+.route-card p{font-size:.88rem;color:#392f37}.route-status{margin-bottom:4px;font-weight:700;font-variant-numeric:tabular-nums}
+.route-card h3{font-size:1.12rem}
+.route-controls button,.route-start{cursor:pointer;border:1px solid var(--ink);background:#fffdfb;color:var(--ink);min-height:44px;padding:6px 12px;border-radius:9px;font:700 .87rem/1.3 ZenMaru,system-ui,sans-serif}
+.route-controls button:disabled{opacity:.5;cursor:default}.route-controls button:first-child,.route-start{background:var(--ink);color:white}
+.route-start{margin-top:12px;margin-left:10px}.route-progress{width:100%;accent-color:var(--ink);display:block;height:9px;margin:10px 0}
+.route-map{position:relative;overflow:hidden;border-radius:9px;margin-bottom:12px;background:var(--paper)}
+.route-map img{width:100%;height:auto;display:block}.route-pin{position:absolute;left:var(--pin-x);top:var(--pin-y);transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--ink);border:2px solid white;box-shadow:0 0 0 3px var(--ink);animation:route-pulse 1.4s ease-out infinite}
+.route-current .event{padding-left:8px}.route-current h3{background:#fffdfb;border-radius:5px;padding:2px 6px}
+@keyframes route-pulse{0%{box-shadow:0 0 0 2px var(--ink)}70%,100%{box-shadow:0 0 0 13px transparent}}
+@keyframes route-in{from{opacity:.45;transform:translateX(7px)}to{opacity:1;transform:none}}
+.route-card[data-animate]>*{animation:route-in .28s ease-out}
+@media(prefers-reduced-motion:reduce){.route-pin,.route-card[data-animate]>*{animation:none}}
 </style>
 </head>
 <body>
@@ -64,6 +81,109 @@ document.querySelectorAll('.map-preview').forEach(button => {
     mapScroll.scrollTo(0, 0);
   });
 });
+const routePins = {
+  land: [[534,519],[676,321],[676,415],[630,314],null,[593,421],[532,570]],
+  sea: [[464,648],[492,349],[627,329],[869,222],[749,235],null,[270,628],[234,546]]
+};
+const playerMarkup = `
+  <div class="route-head"><h2>回る順番</h2><span class="route-count"></span></div>
+  <progress class="route-progress" aria-label="予定の進捗"></progress>
+  <div class="route-card" aria-live="polite" aria-atomic="true">
+    <div class="route-status"></div><h3></h3><p></p>
+  </div>
+  <div class="route-map"><img alt=""><span class="route-pin" aria-hidden="true"></span></div>
+  <div class="route-controls">
+    <button type="button" class="route-toggle">▶ 自動再生</button>
+    <button type="button" class="route-prev">← 前へ</button>
+    <button type="button" class="route-next">次へ →</button>
+  </div>`;
+const heroPlayers = [];
+document.querySelectorAll('.day').forEach(day => {
+  const timeline = [...day.querySelectorAll('.timeline li')];
+  const steps = [{
+    time:'入園後',title:'モバオダの受け取り枠を取る',
+    note:[...day.querySelectorAll('.order li')].map(li=>li.textContent.trim()).join(' ／ ')
+  }, ...timeline.map(row => ({
+    time:row.querySelector('.time').textContent.trim(),
+    title:row.querySelector('h3').textContent.replace(/^バケパ\s*/, '').trim(),
+    note:row.querySelector('.event p')?.textContent.trim() ?? '',
+    row
+  }))];
+  const player = document.createElement('section');
+  player.className = 'route-player';
+  player.id = day.id + '-route';
+  player.hidden = true;
+  player.innerHTML = playerMarkup;
+  day.querySelector('.order').before(player);
+  const start = document.createElement('button');
+  start.type = 'button';
+  start.className = 'route-start';
+  start.setAttribute('aria-controls',player.id);
+  start.setAttribute('aria-expanded','false');
+  start.textContent = '▶ 順番を再生';
+  day.querySelector('.hero').append(start);
+  const get = selector => player.querySelector(selector);
+  const card = get('.route-card');
+  const picture = get('.route-map img');
+  const thumbnail = day.querySelector('.map-preview img');
+  picture.src = thumbnail.src;
+  picture.alt = thumbnail.alt;
+  const pin = get('.route-pin');
+  const toggle = get('.route-toggle'), prev = get('.route-prev'), next = get('.route-next');
+  const progress = get('progress');
+  progress.max = steps.length;
+  let index = 0, timer;
+  function render() {
+    const step = steps[index];
+    get('.route-count').textContent = `${index+1} / ${steps.length}`;
+    progress.value = index+1;
+    get('.route-status').textContent = step.time;
+    card.querySelector('h3').textContent = step.title;
+    card.querySelector('p').textContent = step.note;
+    card.querySelector('p').hidden = !step.note;
+    prev.disabled = index === 0;
+    next.disabled = index === steps.length-1;
+    timeline.forEach(row=>row.classList.toggle('route-current',row===step.row));
+    const location = routePins[day.id][index];
+    pin.hidden = !location;
+    if(location) {
+      pin.style.setProperty('--pin-x',`${location[0]/12}%`);
+      pin.style.setProperty('--pin-y',`${location[1]/8.4848}%`);
+    }
+    card.removeAttribute('data-animate');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>card.setAttribute('data-animate','')));
+  }
+  function pause() {
+    clearInterval(timer);
+    timer = undefined;
+    toggle.textContent = index===steps.length-1 ? '↻ 最初から' : '▶ 自動再生';
+  }
+  function play() {
+    if(index===steps.length-1) index=0;
+    render();
+    clearInterval(timer);
+    toggle.textContent='Ⅱ 一時停止';
+    timer=setInterval(()=>{
+      index++;
+      render();
+      if(index===steps.length-1) pause();
+    },3400);
+  }
+  heroPlayers.push(pause);
+  start.addEventListener('click',()=>{
+    heroPlayers.forEach(stop=>stop());
+    index=0;
+    player.hidden=false;
+    start.setAttribute('aria-expanded','true');
+    player.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
+    play();
+  });
+  toggle.addEventListener('click',()=>timer ? pause() : (heroPlayers.forEach(stop=>stop()),play()));
+  prev.addEventListener('click',()=>{pause();index--;render();});
+  next.addEventListener('click',()=>{index++;pause();render();});
+});
+document.querySelectorAll('nav a').forEach(link=>link.addEventListener('click',()=>heroPlayers.forEach(stop=>stop())));
+document.addEventListener('visibilitychange',()=>{if(document.hidden) heroPlayers.forEach(stop=>stop());});
 </script>
 <!--
 Embedded fonts: Shrikhand and Zen Maru Gothic
