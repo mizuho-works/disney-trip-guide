@@ -496,7 +496,7 @@ parks.forEach(day => {
   function renderMap(layer, selected) {
     const drinks = layer === 'drink';
     const mappedStores = drinkLocations.filter(place => place.mobile || place.id === Number(selected));
-    const plans = meals.filter(meal => meal.time);
+    const plans = shops.slice(0,2).map(shop => meals.find(meal => meal.id === shop.id));
     const backups = meals.filter(meal => meal.role && !meal.time);
     const places = drinks ? mappedStores : [...plans,...backups,...meals.filter(meal=>!meal.role)];
     const initial = places.find(place => place.id === Number(selected)) || places[0];
