@@ -257,6 +257,26 @@ dialog.pin-chooser[data-park=sea]{background:#f4fbff;color:#00446c}
 .map-shop-label{position:absolute;z-index:3;display:block;max-width:124px;min-height:25px;padding:3px 5px;border:1px solid var(--ink);border-radius:6px;background:#fffdfb;color:var(--ink);font:700 .68rem/1.25 system-ui,sans-serif;text-align:left;overflow-wrap:anywhere;cursor:pointer;box-shadow:0 1px 3px #0003}
 .map-shop-plan{background:var(--ink);color:white;border-color:white}
 .map-label-line{position:absolute;z-index:0;height:1px;background:var(--ink);box-shadow:0 0 0 1px #fff9;transform-origin:left center;pointer-events:none}
+dialog.goods-dialog{width:min(470px,calc(100% - 40px));max-height:76dvh;border-radius:17px;box-shadow:0 14px 46px #240d2c70}
+.goods-dialog .welcome-card{max-height:76dvh}
+.goods-dialog .welcome-head,.goods-dialog .welcome-footer{padding:9px 12px}
+.goods-dialog .goods-close{min-height:36px;padding:0 8px;border:1px solid #80003c;border-radius:7px;background:#fff;color:#80003c;font:700 .75rem/1 system-ui,sans-serif;cursor:pointer}
+.goods-scroll{font-size:.86rem}
+.goods-catalog{margin-top:9px}
+.goods-catalog summary{font-weight:700;color:#80003c;cursor:pointer;padding:7px 0}
+.goods-catalog h3{margin-top:7px}
+.goods-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;list-style:none;margin:5px 0 10px;padding:0}
+.goods-grid li{background:white;border:1px solid #eed6de;border-radius:8px;overflow:hidden;padding:5px;font-size:.77rem;line-height:1.4}
+.goods-grid img{display:block;width:100%;aspect-ratio:1.45;object-fit:contain;margin-bottom:3px}
+.goods-grid small{display:block;color:#6e3d54;font-size:.71rem}
+.goods-stay{background:#ffe8ef;border-radius:8px;padding:6px 8px;margin:4px 0}
+.goods-places{padding-left:1.2rem;margin:4px 0 9px}
+.goods-places li{margin:3px 0}
+.goods-note{font-size:.75rem;margin-bottom:4px}
+.goods-footer button[value=later]{background:white;color:#80003c;border:1px solid #80003c}
+.plan-goods{margin:0 0 9px;text-align:right}
+.plan-goods button{border:1px solid var(--rule);border-radius:8px;padding:6px 10px;min-height:38px;background:#fffdfb;color:var(--ink);font-weight:700;cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -334,6 +354,39 @@ dialog.pin-chooser[data-park=sea]{background:#f4fbff;color:#00446c}
 <footer>食事・移動の時刻は目安。バケパの利用時間は券面で確認。</footer>
 </main>
 <dialog id="map-dialog" aria-label="拡大マップ"><form method="dialog"><span>スワイプして地図を移動</span><button autofocus>閉じる</button></form><div class="map-scroll"><img alt=""></div></dialog>
+<dialog id="vp-goods" class="welcome goods-dialog" aria-labelledby="vp-goods-title">
+  <form method="dialog" class="welcome-card">
+    <div class="welcome-head"><div><p>バケーションパッケージ</p><h2 id="vp-goods-title">もらうグッズ、決めた？</h2></div>
+      <button class="goods-close" value="later" aria-label="閉じる">閉じる ×</button></div>
+    <div class="welcome-scroll goods-scroll">
+      <p>現地のレジで引換券を見せて、<strong>券1枚につき好きなグッズを1点</strong>選べます。</p>
+      <details class="goods-catalog">
+        <summary>グッズの写真・引換場所を見る</summary>
+        <h3>11/28・29の候補</h3>
+        <ul class="goods-grid">
+          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_10.jpg" loading="lazy"><strong>ジュビリーバッジ</strong><small>ディズニーシー25周年</small></li>
+          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_04.jpg" loading="lazy"><strong>ショルダーバッグ</strong></li>
+          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_01.jpg" loading="lazy"><strong>くっつきぬいぐるみ</strong></li>
+          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_06.jpg" loading="lazy"><strong>ディズニービークルコレクション〈トミカ〉</strong></li>
+          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_08.jpg" loading="lazy"><strong>ブランケット（収納バッグ付き）</strong><small>11/8から引換</small></li>
+        </ul>
+        <h3>引換場所</h3>
+        <p class="goods-stay"><strong>泊まるホテルで引換</strong><br><a href="https://www.tokyodisneyresort.jp/hotel/dhm/facility.html" target="_blank" rel="noopener">ミッキランジェロ・ギフト</a>（ミラコスタ）</p>
+        <ul class="goods-places">
+          <li><strong>ランド</strong> <a href="https://www.tokyodisneyresort.jp/tdl/shop/detail/558/" target="_blank" rel="noopener">モンスターズ・インク・カンパニーストア</a></li>
+          <li><strong>シー</strong> <a href="https://www.tokyodisneyresort.jp/tds/shop/detail/616/" target="_blank" rel="noopener">ヴィラ・ドナルド・ホームショップ</a>／<a href="https://www.tokyodisneyresort.jp/tds/shop/detail/720/" target="_blank" rel="noopener">ファンタジースプリングス・ギフト</a></li>
+          <li><strong>アンバサダーホテル</strong> <a href="https://www.tokyodisneyresort.jp/hotel/dah/facility.html" target="_blank" rel="noopener">フェスティバル・ディズニー</a></li>
+          <li><strong>ランドホテル</strong> <a href="https://www.tokyodisneyresort.jp/hotel/tdh/facility.html" target="_blank" rel="noopener">ディズニー・マーカンタイル</a></li>
+          <li><strong>トイ・ストーリーホテル</strong> <a href="https://www.tokyodisneyresort.jp/hotel/tsh/facility.html" target="_blank" rel="noopener">ギフト・プラネット</a>（宿泊者のみ）</li>
+        </ul>
+        <p class="goods-note">グッズは在庫次第。対象店舗は来訪日によって変わるため、バケパキットのQRコードから電子版ガイドを確認してください。</p>
+        <a href="https://www.tokyodisneyresort.jp/vp/guide/goods/" target="_blank" rel="noopener">公式のグッズ・引換店舗 ↗</a>
+      </details>
+    </div>
+    <div class="welcome-footer goods-footer"><button value="later" autofocus>あとで見る</button><button value="decided">決めた！</button></div>
+  </form>
+</dialog>
+
 <script>
 const mapDialog = document.querySelector('#map-dialog');
 const largeMap = mapDialog.querySelector('img');
@@ -974,7 +1027,48 @@ welcome.addEventListener('close',()=>{
   } catch {}
 });
 try { hide.checked=localStorage.getItem(welcomeKey)==='yes'; } catch {}
-if(!hide.checked && !location.hash) openWelcome('land');
+const goodsDialog = document.querySelector('#vp-goods');
+const goodsKey = 'disney-guide-goods-decided';
+let goodsDecided = false;
+let goodsPromptShown = false;
+let firstReplay = false;
+try { goodsDecided = localStorage.getItem(goodsKey) === 'yes'; } catch {}
+function showGoods(expand) {
+  goodsPromptShown = true;
+  goodsDialog.returnValue = '';
+  goodsDialog.querySelector('.goods-catalog').open = expand;
+  goodsDialog.showModal();
+  goodsDialog.querySelector('.goods-scroll').scrollTop = 0;
+}
+goodsDialog.addEventListener('close', () => {
+  if (goodsDialog.returnValue === 'decided') {
+    goodsDecided = true;
+    try { localStorage.setItem(goodsKey,'yes'); } catch {}
+  }
+});
+parks.forEach(day => {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'plan-goods';
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = 'バケパのグッズ・引換場所';
+  button.setAttribute('aria-haspopup','dialog');
+  button.addEventListener('click',()=>showGoods(true));
+  wrapper.append(button);
+  day.querySelector('.order').before(wrapper);
+});
+welcome.addEventListener('close', () => {
+  if (!firstReplay) return;
+  firstReplay = false;
+  if (!goodsDecided && !goodsPromptShown) showGoods(false);
+});
+if (!location.hash) {
+  if (!hide.checked) {
+    firstReplay = true;
+    openWelcome('land');
+  } else if (!goodsDecided) showGoods(false);
+}
+
 
 </script>
 <!--
