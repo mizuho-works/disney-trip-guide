@@ -120,6 +120,46 @@ main{max-width:940px}
   .special-card{grid-template-columns:57px minmax(0,1fr)}
 }
 
+.map-modes button{font-size:.85rem}
+.drink-map-list{border:0;background:transparent;padding:8px 0;color:var(--ink);font:700 .84rem/1.4 ZenMaru,system-ui,sans-serif;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.map-drink-detail{padding:8px}
+.meal-soft{padding:4px 10px;font-size:.83rem;border-top:1px solid var(--rule)}
+.meal-soft summary{cursor:pointer;font-weight:700}
+.meal-soft p{padding-bottom:4px;color:#392f37}
+.special-heading{margin-top:13px}
+.special-heading a{margin-left:5px;font-size:.77rem;text-underline-offset:3px}
+.regular-drinks{margin-top:8px}
+.regular-grid{display:grid;gap:8px;padding-bottom:9px}
+.regular-grid article{border-top:1px solid var(--rule);padding-top:5px;color:#3a303b;font-size:.82rem}
+.regular-grid strong{white-space:nowrap}
+.regular-grid a{color:var(--ink);text-underline-offset:3px}
+.plan-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:7px;margin:0 0 10px}
+.plan-actions .route-start{margin:0}
+.welcome-trigger{background:#fffdfb;border:1px solid var(--ink);color:var(--ink);padding:6px 10px;min-height:44px;border-radius:9px;font:700 .8rem/1.3 ZenMaru,system-ui,sans-serif;cursor:pointer}
+dialog.welcome{position:fixed;inset:0;margin:auto;width:min(560px,calc(100% - 24px));height:fit-content;max-height:calc(100dvh - 24px);overflow:visible;color:#3b2834;background:none}
+.welcome::backdrop{background:#241923aa}
+.welcome .welcome-card{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;max-height:calc(100dvh - 24px);padding:0;gap:0;background:#fffafa;border-radius:18px;overflow:hidden}
+.welcome-head,.welcome-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 15px;background:#ffe8ef}
+.welcome-head p{font-size:.77rem;color:#670133}
+.welcome-head h2{font-size:1.3rem;color:#670133}
+.welcome .welcome-close{border:0;padding:0;background:#fff;border-radius:50%;color:#670133;width:36px;height:36px;font:24px/1 system-ui,sans-serif;cursor:pointer}
+.welcome-scroll{overflow:auto;overscroll-behavior:contain;padding:10px 13px;font-size:.85rem}
+.welcome-days{display:grid;gap:7px;margin-bottom:9px}
+.welcome-day{background:#ffe8ef;border-radius:9px;padding:7px 9px;color:#670133}
+.welcome-day.sea{background:#e1f2ff;color:#00446c}
+.welcome-day ol{margin:3px 0 0;padding:0;list-style:none}
+.welcome-day li{display:grid;grid-template-columns:97px minmax(0,1fr);gap:3px}
+.welcome-day strong{font-size:.76rem}
+.welcome-nav{margin:3px 0}
+.welcome-nav div{display:grid;grid-template-columns:84px 1fr;gap:4px;margin-top:3px}
+.welcome-nav dt{font-weight:700}
+.welcome-nav dd{margin:0}
+.welcome-footer{flex-wrap:wrap;font-size:.82rem}
+.welcome-footer label{display:flex;align-items:center;gap:4px;cursor:pointer}
+.welcome-footer button{min-height:40px;background:#80003c;color:white;border:0;border-radius:8px;font:700 .85rem/1 system-ui,sans-serif;cursor:pointer}
+@media(max-width:360px){.welcome-day li{grid-template-columns:88px minmax(0,1fr)}}
+.special-pins .meal-pin{width:34px;height:34px}.special-pins .meal-pin[aria-pressed=true]{z-index:1}
+
 </style>
 </head>
 <body>
@@ -323,7 +363,7 @@ document.querySelectorAll('.drink-section').forEach(section=>{
   }));
 });
 
-const foodGuide = {"land": {"shops": [{"id": 357, "name": "トゥモローランド・テラス", "role": "昼食", "time": "13:10ごろ", "area": "トゥモローランド", "x": 630, "y": 314, "menu": [["ベーコンチーズバーガー", "単品 ¥750／セット ¥1,290"], ["フライドチキンバーガー", "単品 ¥750／セット ¥1,290"], ["チキンナゲット", "¥400"], ["フレンチフライポテト", "¥280"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/1941_1.15_1_794d398o.jpg"}, {"id": 352, "name": "プラズマ・レイズ・ダイナー", "role": "夕食", "time": "16:30〜17:00", "area": "トゥモローランド", "x": 593, "y": 421, "menu": [["骨付きチキンとハッシュドビーフライス", "単品 ¥1,200／セット ¥1,740"], ["エビフライとハッシュドビーフライス", "単品 ¥1,200／セット ¥1,740"], ["キッズ・プラズマセット", "¥940"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4537_1.0_1_aq20893n.jpg"}, {"id": 338, "name": "ハングリーベア・レストラン", "role": "夕食の予備", "time": "", "area": "ウエスタンランド", "x": 402, "y": 286, "menu": [["チキンカレー（甘口／中辛）", "¥900"], ["ポークカツカレー（甘口／中辛）", "¥1,100"], ["リトルハングリーベア・セット", "¥780"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/256_1.2_1_k0duu8w7.jpg"}], "specials": [{"id": 5052, "name": "あんコーヒー（あずき＆ホイップ）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5052_1.1_1_ZfuFJ1vn.jpg", "stores": [{"id": 357, "name": "トゥモローランド・テラス", "dates": "11/1〜3/31", "mobile": true}]}, {"id": 4572, "name": "パイナップル＆オレンジのスパークリングドリンク", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4572_1.5_1_l69XIIn0.jpg", "stores": [{"id": 357, "name": "トゥモローランド・テラス", "dates": "4/1〜", "mobile": true}]}, {"id": 5025, "name": "ホットゆず抹茶ドリンク", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5025_1.2_1_I3s2dmC6.jpg", "stores": [{"id": 352, "name": "プラズマ・レイズ・ダイナー", "dates": "11/15〜12/25", "mobile": true}, {"id": null, "name": "ザ・ガゼーボ", "dates": "11/1〜12/25", "mobile": false}, {"id": null, "name": "グランマ・サラのキッチン", "dates": "11/1〜12/25", "mobile": true}, {"id": null, "name": "トルバドールタバン", "dates": "11/1〜12/25", "mobile": true}]}, {"id": 5034, "name": "ラッシー（マンゴー）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5034_1.0_1_5M0D2gH5.jpg", "stores": [{"id": 338, "name": "ハングリーベア・レストラン", "dates": "11/1〜翌年10/31", "mobile": true}]}, {"id": 4417, "name": "スペシャルドリンク（苺ミルク）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4417_1.3_1_P70xd60k.jpg", "stores": [{"id": null, "name": "リフレッシュメントコーナー", "dates": "11/1〜12/25", "mobile": true}, {"id": null, "name": "キャンプ・ウッドチャック・キッチン", "dates": "11/1〜12/25", "mobile": true}, {"id": null, "name": "ヒューイ・デューイ・ルーイのグッドタイム・カフェ", "dates": "11/1〜12/25", "mobile": true}, {"id": null, "name": "パン・ギャラクティック・ピザ・ポート", "dates": "11/1〜11/30", "mobile": false}]}], "prefix": "tdl"}, "sea": {"shops": [{"id": 459, "name": "ユカタン・ベースキャンプ・グリル", "role": "昼食", "time": "11:55〜12:00", "area": "ロストリバーデルタ", "x": 627, "y": 329, "menu": [["ハッシュドビーフのユカタンライスボウル", "単品 ¥1,300／セット ¥1,580"], ["ベジタブルキーマカレーのユカタンライスボウル", "単品 ¥1,350／セット ¥1,630"], ["お子様セット", "¥940"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/3964_1.3_1_3vr0964q.jpg"}, {"id": 441, "name": "ドックサイドダイナー", "role": "夕食", "time": "17:45〜18:00", "area": "アメリカンウォーターフロント", "x": 234, "y": 546, "menu": [["シェフのおすすめセット", "単品 ¥1,280／セット ¥1,820"], ["アボカドチーズバーガー（ソーセージ・オニオンリング添え）", "単品 ¥1,480／セット ¥2,020"], ["ホットデニッシュサンド（パストラミビーフ＆チーズ）", "単品 ¥980／セット ¥1,520"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5031_1.0_1_jPe8I8x7.jpg"}, {"id": 403, "name": "ザンビーニ・ブラザーズ・リストランテ", "role": "夕食の予備", "time": "", "area": "メディテレーニアンハーバー", "x": 503, "y": 525, "menu": [["ミートボール・スパゲッティ", "¥1,200"], ["ピッツァ・マルゲリータ", "¥750"], ["シーフードピッツァ（エッグ＆サーモントラウト）", "¥1,400"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/2695_1.1_1_7772s6ZS.jpg"}], "specials": [{"id": 5025, "name": "ホットゆず抹茶ドリンク", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5025_1.2_1_I3s2dmC6.jpg", "stores": [{"id": 459, "name": "ユカタン・ベースキャンプ・グリル", "dates": "11/3〜12/25", "mobile": true}, {"id": null, "name": "ハドソンリバー・ハーベスト", "dates": "11/1〜4/11", "mobile": true}, {"id": null, "name": "ベイサイド・テイクアウト", "dates": "11/1〜4/11", "mobile": true}]}, {"id": 3693, "name": "ミスティッククリスタル・ドリンク（ピーチ＆マンゴー）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/3693_1.2_1_9en387o1.jpg", "stores": [{"id": 459, "name": "ユカタン・ベースキャンプ・グリル", "dates": "11/3〜12/25", "mobile": true}]}, {"id": 4417, "name": "スペシャルドリンク（苺ミルク）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4417_1.3_1_P70xd60k.jpg", "stores": [{"id": 441, "name": "ドックサイドダイナー", "dates": "11/1〜4/11", "mobile": true}, {"id": null, "name": "ゴンドリエ・スナック", "dates": "11/1〜12/25", "mobile": false}, {"id": null, "name": "セバスチャンのカリプソキッチン", "dates": "11/1〜4/11", "mobile": true}]}, {"id": 4599, "name": "スペシャルスパークリングドリンク（キウイ＆ライム）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4599_1.7_1_63197JQN.jpg", "stores": [{"id": 403, "name": "ザンビーニ・ブラザーズ・リストランテ", "dates": "4/8〜4/11", "mobile": true}]}], "prefix": "tds"}};
+const foodGuide = {"land": {"shops": [{"id": 357, "name": "トゥモローランド・テラス", "role": "昼食", "time": "13:10ごろ", "area": "トゥモローランド", "x": 630, "y": 314, "menu": [["ベーコンチーズバーガー", "単品 ¥750／セット ¥1,290"], ["フライドチキンバーガー", "単品 ¥750／セット ¥1,290"], ["チキンナゲット", "¥400"], ["フレンチフライポテト", "¥280"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/1941_1.15_1_794d398o.jpg", "regular": "コーヒー／紅茶／アイスコーヒー／アイスウーロン茶／コカ・コーラ／コカ・コーラ ゼロ／ファンタ ゴールデンサイダー／スプライト／オレンジドリンク", "milk": true}, {"id": 352, "name": "プラズマ・レイズ・ダイナー", "role": "夕食", "time": "16:30〜17:00", "area": "トゥモローランド", "x": 593, "y": 421, "menu": [["骨付きチキンとハッシュドビーフライス", "単品 ¥1,200／セット ¥1,740"], ["エビフライとハッシュドビーフライス", "単品 ¥1,200／セット ¥1,740"], ["キッズ・プラズマセット", "¥940"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4537_1.0_1_aq20893n.jpg", "regular": "コーヒー／ウーロン茶／アイスコーヒー／アイスウーロン茶／コカ・コーラ／オレンジドリンク／ファンタ メロン", "milk": false}, {"id": 338, "name": "ハングリーベア・レストラン", "role": "夕食の予備", "time": "", "area": "ウエスタンランド", "x": 402, "y": 286, "menu": [["チキンカレー（甘口／中辛）", "¥900"], ["ポークカツカレー（甘口／中辛）", "¥1,100"], ["リトルハングリーベア・セット", "¥780"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/256_1.2_1_k0duu8w7.jpg", "regular": "アイスウーロン茶／コカ・コーラ／ファンタ メロン／オレンジドリンク", "milk": true}], "specials": [{"id": 5052, "name": "あんコーヒー（あずき＆ホイップ）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5052_1.1_1_ZfuFJ1vn.jpg", "stores": [{"id": 357, "name": "トゥモローランド・テラス", "dates": "11/1〜3/31", "mobile": true, "mapId": 357}]}, {"id": 4572, "name": "パイナップル＆オレンジのスパークリングドリンク", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4572_1.5_1_l69XIIn0.jpg", "stores": [{"id": 357, "name": "トゥモローランド・テラス", "dates": "4/1〜", "mobile": true, "mapId": 357}]}, {"id": 5025, "name": "ホットゆず抹茶ドリンク", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5025_1.2_1_I3s2dmC6.jpg", "stores": [{"id": 352, "name": "プラズマ・レイズ・ダイナー", "dates": "11/15〜12/25", "mobile": true, "mapId": 352}, {"id": null, "name": "ザ・ガゼーボ", "dates": "11/1〜12/25", "mobile": false, "mapId": 1041}, {"id": null, "name": "グランマ・サラのキッチン", "dates": "11/1〜12/25", "mobile": true, "mapId": 1073}, {"id": null, "name": "トルバドールタバン", "dates": "11/1〜12/25", "mobile": true, "mapId": 1098}]}, {"id": 5034, "name": "ラッシー（マンゴー）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5034_1.0_1_5M0D2gH5.jpg", "stores": [{"id": 338, "name": "ハングリーベア・レストラン", "dates": "11/1〜翌年10/31", "mobile": true, "mapId": 338}]}, {"id": 4417, "name": "スペシャルドリンク（苺ミルク）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4417_1.3_1_P70xd60k.jpg", "stores": [{"id": null, "name": "リフレッシュメントコーナー", "dates": "11/1〜12/25", "mobile": true, "mapId": 1021}, {"id": null, "name": "キャンプ・ウッドチャック・キッチン", "dates": "11/1〜12/25", "mobile": true, "mapId": 1065}, {"id": null, "name": "ヒューイ・デューイ・ルーイのグッドタイム・カフェ", "dates": "11/1〜12/25", "mobile": true, "mapId": 1117}, {"id": null, "name": "パン・ギャラクティック・ピザ・ポート", "dates": "11/1〜11/30", "mobile": false, "mapId": 1131}]}], "prefix": "tdl", "drinkLocations": [{"x": 630, "y": 314, "id": 357, "name": "トゥモローランド・テラス", "mobile": true}, {"x": 593, "y": 421, "id": 352, "name": "プラズマ・レイズ・ダイナー", "mobile": true}, {"id": 1041, "x": 471, "y": 405, "name": "ザ・ガゼーボ", "mobile": false}, {"id": 1073, "x": 474, "y": 203, "name": "グランマ・サラのキッチン", "mobile": true}, {"id": 1098, "x": 448, "y": 269, "name": "トルバドールタバン", "mobile": true}, {"x": 402, "y": 286, "id": 338, "name": "ハングリーベア・レストラン", "mobile": true}, {"id": 1021, "x": 521, "y": 437, "name": "リフレッシュメントコーナー", "mobile": true}, {"id": 1065, "x": 342, "y": 226, "name": "キャンプ・ウッドチャック・キッチン", "mobile": true}, {"id": 1117, "x": 716, "y": 222, "name": "ヒューイ・デューイ・ルーイのグッドタイム・カフェ", "mobile": true}, {"id": 1131, "x": 644, "y": 413, "name": "パン・ギャラクティック・ピザ・ポート", "mobile": false}]}, "sea": {"shops": [{"id": 459, "name": "ユカタン・ベースキャンプ・グリル", "role": "昼食", "time": "11:55〜12:00", "area": "ロストリバーデルタ", "x": 627, "y": 329, "menu": [["ハッシュドビーフのユカタンライスボウル", "単品 ¥1,300／セット ¥1,580"], ["ベジタブルキーマカレーのユカタンライスボウル", "単品 ¥1,350／セット ¥1,630"], ["お子様セット", "¥940"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/3964_1.3_1_3vr0964q.jpg", "regular": "コーヒー／紅茶／アイスコーヒー／アイスウーロン茶／コカ・コーラ／午後の紅茶 アップルティーソーダ／オレンジドリンク", "milk": true}, {"id": 441, "name": "ドックサイドダイナー", "role": "夕食", "time": "17:45〜18:00", "area": "アメリカンウォーターフロント", "x": 234, "y": 546, "menu": [["シェフのおすすめセット", "単品 ¥1,280／セット ¥1,820"], ["アボカドチーズバーガー（ソーセージ・オニオンリング添え）", "単品 ¥1,480／セット ¥2,020"], ["ホットデニッシュサンド（パストラミビーフ＆チーズ）", "単品 ¥980／セット ¥1,520"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5031_1.0_1_jPe8I8x7.jpg", "regular": "コーヒー／紅茶／アイスコーヒー／アイスウーロン茶／コカ・コーラ／オレンジドリンク／キリンレモン", "milk": false}, {"id": 403, "name": "ザンビーニ・ブラザーズ・リストランテ", "role": "夕食の予備", "time": "", "area": "メディテレーニアンハーバー", "x": 503, "y": 525, "menu": [["ミートボール・スパゲッティ", "¥1,200"], ["ピッツァ・マルゲリータ", "¥750"], ["シーフードピッツァ（エッグ＆サーモントラウト）", "¥1,400"], ["キリン一番搾り生ビール", "¥800"]], "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/2695_1.1_1_7772s6ZS.jpg", "regular": "コーヒー／紅茶／ウーロン茶／アイスコーヒー／アイスウーロン茶／コカ・コーラ／グレープドリンク／午後の紅茶 アップルティーソーダ", "milk": true}], "specials": [{"id": 5025, "name": "ホットゆず抹茶ドリンク", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/5025_1.2_1_I3s2dmC6.jpg", "stores": [{"id": 459, "name": "ユカタン・ベースキャンプ・グリル", "dates": "11/3〜12/25", "mobile": true, "mapId": 459}, {"id": null, "name": "ハドソンリバー・ハーベスト", "dates": "11/1〜4/11", "mobile": true, "mapId": 1050}, {"id": null, "name": "ベイサイド・テイクアウト", "dates": "11/1〜4/11", "mobile": true, "mapId": 1061}]}, {"id": 3693, "name": "ミスティッククリスタル・ドリンク（ピーチ＆マンゴー）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/3693_1.2_1_9en387o1.jpg", "stores": [{"id": 459, "name": "ユカタン・ベースキャンプ・グリル", "dates": "11/3〜12/25", "mobile": true, "mapId": 459}]}, {"id": 4417, "name": "スペシャルドリンク（苺ミルク）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4417_1.3_1_P70xd60k.jpg", "stores": [{"id": 441, "name": "ドックサイドダイナー", "dates": "11/1〜4/11", "mobile": true, "mapId": 441}, {"id": null, "name": "ゴンドリエ・スナック", "dates": "11/1〜12/25", "mobile": false, "mapId": 1020}, {"id": null, "name": "セバスチャンのカリプソキッチン", "dates": "11/1〜4/11", "mobile": true, "mapId": 1108}]}, {"id": 4599, "name": "スペシャルスパークリングドリンク（キウイ＆ライム）", "photo": "https://media1.tokyodisneyresort.jp/food_menu/image/4599_1.7_1_63197JQN.jpg", "stores": [{"id": 403, "name": "ザンビーニ・ブラザーズ・リストランテ", "dates": "4/8〜4/11", "mobile": true, "mapId": 403}]}], "prefix": "tds", "drinkLocations": [{"x": 627, "y": 329, "id": 459, "name": "ユカタン・ベースキャンプ・グリル", "mobile": true}, {"id": 1050, "x": 241, "y": 529, "name": "ハドソンリバー・ハーベスト", "mobile": true}, {"id": 1061, "x": 462, "y": 355, "name": "ベイサイド・テイクアウト", "mobile": true}, {"x": 234, "y": 546, "id": 441, "name": "ドックサイドダイナー", "mobile": true}, {"id": 1020, "x": 400, "y": 562, "name": "ゴンドリエ・スナック", "mobile": false}, {"id": 1108, "x": 568, "y": 395, "name": "セバスチャンのカリプソキッチン", "mobile": true}, {"x": 503, "y": 525, "id": 403, "name": "ザンビーニ・ブラザーズ・リストランテ", "mobile": true}]}};
 const resort = 'https://www.tokyodisneyresort.jp';
 const parkLinks = [...document.querySelectorAll('[data-park]')];
 
@@ -333,36 +373,67 @@ function pictureMarkup(url, label, href) {
 }
 
 document.querySelectorAll('.day').forEach(day => {
-  const {shops, specials, prefix} = foodGuide[day.id];
+  const {shops, specials, prefix, drinkLocations} = foodGuide[day.id];
   const map = day.querySelector('.meal-map');
   const picker = day.querySelector('.meal-picker');
   const detail = day.querySelector('.meal-detail');
   const parentMap = day.querySelector('.map');
   const thumbnail = parentMap.querySelector('.map-preview img');
   const image = thumbnail.cloneNode();
-  image.alt = day.id === 'land'
-    ? 'ランドの食事候補3店を示した地図' : 'シーの食事候補3店を示した地図';
+  image.alt = day.id === 'land' ? 'ランドの案内地図' : 'シーの案内地図';
   map.append(image);
   map.setAttribute('aria-label','食事候補を地図で選択');
   map.setAttribute('role','group');
   picker.setAttribute('aria-label','食事候補を店名で選択');
   picker.setAttribute('role','group');
   detail.id = day.id + '-menu';
-  const pins = shops.map((shop, i) => {
+  let mapMode = 'meal';
+  const modeBar = document.createElement('div');
+  modeBar.className = 'map-modes special-filter';
+  modeBar.setAttribute('role','group');
+  modeBar.setAttribute('aria-label','地図に表示する場所');
+  modeBar.innerHTML = '<button type="button" data-map-mode="meal" aria-pressed="true">ごはん</button><button type="button" data-map-mode="special" aria-pressed="false">スペシャルドリンク</button>';
+  map.before(modeBar);
+  const makePin = (shop, label) => {
     const pin = document.createElement('button');
     pin.type = 'button';
     pin.className = 'meal-pin';
     pin.dataset.shop = shop.id;
     pin.setAttribute('aria-controls',detail.id);
-    pin.setAttribute('aria-label',shop.role + ' ' + shop.name);
+    pin.setAttribute('aria-label',shop.role ? shop.role + ' ' + shop.name : shop.name);
     pin.style.left = shop.x / 12 + '%';
     pin.style.top = shop.y / 8.4848 + '%';
-    pin.innerHTML = `<span>${i+1}</span>`;
+    pin.innerHTML = `<span>${label}</span>`;
     map.append(pin);
     return pin;
-  });
-  picker.innerHTML = shops.map((s, i) => `<button type="button" data-shop="${s.id}" aria-controls="${detail.id}"><span class="shop-num">${i+1}</span><span><small>${s.role} ${s.time}</small>${s.name}</span></button>`).join('');
-  const selectors = [...pins, ...picker.querySelectorAll('button')];
+  };
+  let selectors = [];
+  function renderMap(mode, id) {
+    mapMode = mode;
+    parentMap.querySelector('h2').textContent = mode === 'special' ? 'スペシャルドリンクの販売店' : 'モバオダできる食事候補';
+    parentMap.querySelector('.map-help').textContent = mode === 'special'
+      ? '✦をタップすると、お店のドリンク・価格・写真が見られます。'
+      : '地図のピンか店名をタップすると、メニューと価格が開きます。';
+    map.classList.toggle('special-pins',mode === 'special');
+    const places = mode === 'special' ? drinkLocations : shops;
+    modeBar.querySelectorAll('button').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.mapMode === mode)));
+    map.setAttribute('aria-label',mode === 'special' ? 'スペシャルドリンクの販売店' : '食事候補を地図で選択');
+    picker.setAttribute('aria-label',mode === 'special' ? 'スペシャルドリンクの販売店' : '食事候補を店名で選択');
+    map.querySelectorAll('.meal-pin').forEach(pin => pin.remove());
+    const pins = places.map((shop, index) => makePin(shop,mode === 'special' ? '✦' : index+1));
+    picker.innerHTML = places.map((shop, index) => `<button type="button" data-shop="${shop.id}" aria-controls="${detail.id}"><span class="shop-num">${mode === 'special' ? '✦' : index+1}</span><span><small>${mode === 'special' ? (shop.mobile ? 'モバオダ対応' : 'モバオダ非対応') : shop.role+' '+shop.time}</small>${shop.name}</span></button>`).join('');
+    picker.hidden = mode === 'special';
+    const listToggle = parentMap.querySelector('.drink-map-list');
+    listToggle.hidden = mode !== 'special';
+    listToggle.setAttribute('aria-expanded','false');
+    listToggle.textContent = '販売店一覧を開く';
+    selectors = [...pins, ...picker.querySelectorAll('button')];
+    selectors.forEach(button => button.addEventListener('click', () => {
+      selectPlace(button.dataset.shop);
+      if (mode === 'special') detail.scrollIntoView({block:'nearest',behavior:'instant'});
+    }));
+    selectPlace(places.some(place => place.id === Number(id)) ? id : places[0].id);
+  }
   function hookPhotos(element) {
     element.querySelectorAll('.food-photo img').forEach(img => {
       const fallback = () => { img.hidden = true; };
@@ -379,13 +450,38 @@ document.querySelectorAll('.day').forEach(day => {
     detail.innerHTML = `<div class="meal-name"><p>${shop.role} ${shop.time} · ${shop.area}</p><h3>${shop.name}</h3></div>
       <div class="meal-body">${pictureMarkup(shop.photo, shop.menu[0][0], url)}
       <dl class="meal-prices">${shop.menu.map(([name, price]) => `<div><dt>${name}</dt><dd>${price}</dd></div>`).join('')}</dl></div>
+      <details class="meal-soft"><summary>定番ソフトドリンク</summary>
+      <p>${shop.regular} <strong>各 ¥360</strong></p>${shop.milk ? '<p>ミルク（紙パック） <strong>¥190</strong></p>' : ''}</details>
       ${matching.length ? `<div class="special-short"><strong>✦ スペシャルドリンク</strong>${matching.map(drink => `<a href="${resort}/food/${drink.id}/" target="_blank" rel="noopener">${drink.name} <b>¥750 ↗</b></a>`).join('')}</div>` : ''}
       <p class="menu-link"><a href="${url}" target="_blank" rel="noopener">公式メニューをすべて見る ↗</a></p>`;
     hookPhotos(detail);
   }
-  day.chooseShop = selectShop;
-  selectors.forEach(button => button.addEventListener('click', () => selectShop(button.dataset.shop)));
-  selectShop(shops[0].id);
+  function selectPlace(id) {
+    if (mapMode === 'meal') { selectShop(id); return; }
+    const place = drinkLocations.find(place => place.id === Number(id));
+    if (!place) return;
+    selectors.forEach(el => el.setAttribute('aria-pressed', String(Number(el.dataset.shop) === place.id)));
+    const drinks = specials.filter(drink => drink.stores.some(store => store.mapId === place.id));
+    detail.innerHTML = `<div class="meal-name"><p>${place.mobile ? 'モバオダ対応店' : 'モバオダ非対応店'}</p><h3>${place.name}</h3></div>
+      <div class="special-list map-drink-detail">${drinks.map(drink => cardMarkup(drink, drink.stores.filter(store => store.mapId === place.id), false)).join('')}</div>`;
+    hookPhotos(detail);
+  }
+  const listToggle = document.createElement('button');
+  listToggle.type = 'button';
+  listToggle.className = 'drink-map-list';
+  picker.id = day.id+'-map-shops';
+  listToggle.setAttribute('aria-controls',picker.id);
+  picker.before(listToggle);
+  listToggle.addEventListener('click', () => {
+    picker.hidden = !picker.hidden;
+    listToggle.setAttribute('aria-expanded',String(!picker.hidden));
+    listToggle.textContent = picker.hidden ? '販売店一覧を開く' : '販売店一覧を閉じる';
+  });
+  modeBar.addEventListener('click',event => {
+    const button=event.target.closest('[data-map-mode]');
+    if (button) renderMap(button.dataset.mapMode);
+  });
+  day.chooseShop = (mode, id) => renderMap(mode,id);
 
   const fullMap = parentMap.querySelector('.map-preview');
   fullMap.before(Object.assign(document.createElement('p'),{
@@ -404,26 +500,33 @@ document.querySelectorAll('.day').forEach(day => {
     <button type="button" data-mode="counter" aria-pressed="false">モバオダ非対応</button>
   </div>`;
   section.innerHTML = `<p class="section-label">バケパのドリンク券</p>
-    <h2 id="${day.id}-drink-title">スペシャルドリンク</h2>
+    <h2 id="${day.id}-drink-title">ドリンクメニュー</h2>
     <p class="special-intro">対象ドリンクは店頭で券を提示。表示価格は通常価格です。</p>
+    <details class="voucher regular-drinks" id="${day.id}-regular"><summary>定番ソフトドリンク・価格</summary>
+      <div class="regular-grid">${shops.map(shop => `<article><h3>${shop.name}</h3><p>${shop.regular} <strong>各 ¥360</strong></p>${shop.milk ? '<p>ミルク（紙パック） <strong>¥190</strong></p>' : ''}
+      <a href="${resort}/${prefix}/restaurant/food/${shop.id}/" target="_blank" rel="noopener">公式メニュー ↗</a></article>`).join('')}</div></details>
+    <h3 class="special-heading">スペシャルドリンク <a href="#${day.id}-map-special">地図で見る ↗</a></h3>
     ${buttonGroup}<div class="special-list"></div>`;
   const filterButtons = [...section.querySelectorAll('[data-mode]')];
   const list = section.querySelector('.special-list');
+  function cardMarkup(drink, stores, linkToMap) {
+    const url = `${resort}/food/${drink.id}/`;
+    return `<article class="special-card">
+      ${pictureMarkup(drink.photo, drink.name, url)}
+      <div class="special-info"><div class="special-name"><h3>${drink.name}</h3><strong>¥750</strong></div>
+      <ul>${stores.map(store => `<li>
+        ${linkToMap ? `<a href="#${day.id}-map-special-${store.mapId}">${store.name} ↗</a>` : '販売期間'}
+        <small>${store.dates} · ${store.mobile ? 'モバオダ対応' : 'モバオダ非対応'}</small>
+      </li>`).join('')}</ul></div></article>`;
+  }
   function renderDrinks(mode) {
     list.innerHTML = specials.map(drink => {
       const stores = drink.stores.filter(store => mode === 'all' || store.mobile === (mode === 'mobile'));
-      if (!stores.length) return '';
-      const url = `${resort}/food/${drink.id}/`;
-      return `<article class="special-card">
-        ${pictureMarkup(drink.photo, drink.name, url)}
-        <div class="special-info"><div class="special-name"><h3>${drink.name}</h3><strong>¥750</strong></div>
-        <ul>${stores.map(store => `<li>
-          ${store.id ? `<a data-map-shop="${store.id}" href="#${day.id}-map-${store.id}">${store.name}</a>` : store.name}
-          <small>${store.dates} · ${store.mobile ? 'モバオダ対応' : 'モバオダ非対応'}</small>
-        </li>`).join('')}</ul></div></article>`;
+      return stores.length ? cardMarkup(drink, stores, true) : '';
     }).join('');
     hookPhotos(list);
   }
+  renderMap('meal');
   filterButtons.forEach(button => button.addEventListener('click', () => {
     filterButtons.forEach(filter => filter.setAttribute('aria-pressed', String(filter === button)));
     renderDrinks(button.dataset.mode);
@@ -447,7 +550,7 @@ document.querySelectorAll('.day').forEach(day => {
 });
 
 function showPage() {
-  const match = /^#(land|sea)(?:-(map|drinks|route)(?:-(\d+))?)?$/.exec(location.hash);
+  const match = /^#(land|sea)(?:-(map|drinks|route)(?:-(special))?(?:-(\d+))?)?$/.exec(location.hash);
   const park = match?.[1] || 'land';
   const page = match?.[2] === 'route' ? 'plan' : match?.[2] || 'plan';
   heroPlayers.forEach(stop => stop());
@@ -463,7 +566,7 @@ function showPage() {
       if (link.dataset.page === page) link.setAttribute('aria-current','page');
       else link.removeAttribute('aria-current');
     });
-    if (day.id === park && page === 'map' && match?.[3]) day.chooseShop(match[3]);
+    if (day.id === park && page === 'map') day.chooseShop(match?.[3] ? 'special' : 'meal',match?.[4]);
   });
   document.body.dataset.park = park;
 }
@@ -472,6 +575,70 @@ addEventListener('hashchange', () => {
   window.scrollTo(0, 0);
 });
 showPage();
+
+const welcome = document.createElement('dialog');
+welcome.className = 'welcome';
+welcome.setAttribute('aria-labelledby','welcome-title');
+welcome.innerHTML = `<form method="dialog" class="welcome-card">
+  <div class="welcome-head"><div><p>11/28（土）・11/29（日）</p><h2 id="welcome-title">2日間の回り方</h2></div>
+    <button class="welcome-close" value="dismiss" aria-label="案内を閉じる">×</button>
+  </div>
+  <div class="welcome-scroll">
+    <div class="welcome-days"></div>
+    <h3>しおりの使い方</h3>
+    <dl class="welcome-nav">
+      <div><dt>予定</dt><dd>時刻と入園後のモバオダ。「順番を再生」で次の行き先を地図で確認。</dd></div>
+      <div><dt>地図・ごはん</dt><dd>ごはん・スペシャルドリンクを切り替え。ピンでお店・価格・写真を確認。</dd></div>
+      <div><dt>ドリンク</dt><dd>定番の飲み物とバケパの券。スペシャルドリンクはモバオダ対応で絞り込み。</dd></div>
+    </dl>
+  </div>
+  <div class="welcome-footer">
+    <label><input type="checkbox" name="hide-welcome"> 次回から表示しない</label>
+    <button value="open" autofocus>しおりを開く</button>
+  </div>
+</form>`;
+document.body.append(welcome);
+const welcomeDays = welcome.querySelector('.welcome-days');
+const shortTitles = {
+  land:['ベイマックス','D-Groovationz4のショー','昼食 · トゥモローランド・テラス',
+        '好きな対象アトラクション・休憩','夕食 · プラズマ・レイズ','ミラコスタへ'],
+  sea:['ドリームス・テイク・フライト','昼食 · ユカタン','アナ雪','ピーターパン',
+       '休憩・おやつ','トイ・ストーリー・マニア！','夕食 · ドックサイド']
+};
+document.querySelectorAll('.day').forEach(day => {
+  const label = day.id === 'land' ? '11/28（土）ランド' : '11/29（日）シー';
+  const days = document.createElement('section');
+  days.className = 'welcome-day ' + day.id;
+  const times = Array.from(day.querySelectorAll('.timeline .time'), time => time.textContent.trim());
+  days.innerHTML = `<h3>${label}</h3><ol>${shortTitles[day.id].map((name,index) =>
+    `<li><strong>${times[index]}</strong> <span>${name}</span></li>`).join('')}</ol>`;
+  welcomeDays.append(days);
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'welcome-trigger';
+  button.textContent = '2日間の回り方';
+  const start = day.querySelector('.route-start');
+  const actions = document.createElement('div');
+  actions.className = 'plan-actions';
+  start.before(actions);
+  actions.append(button,start);
+  button.addEventListener('click',openWelcome);
+});
+
+const welcomeKey = 'disney-guide-hide-intro';
+const hideWelcome = welcome.querySelector('input');
+function openWelcome() {
+  welcome.showModal();
+  welcome.querySelector('.welcome-scroll').scrollTop = 0;
+}
+welcome.addEventListener('close', () => {
+  try {
+    if (hideWelcome.checked) localStorage.setItem(welcomeKey,'yes');
+    else localStorage.removeItem(welcomeKey);
+  } catch {}
+});
+try { hideWelcome.checked = localStorage.getItem(welcomeKey) === 'yes'; } catch {}
+if (!hideWelcome.checked && !location.hash) openWelcome();
 
 </script>
 <!--
