@@ -359,12 +359,13 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
   #info .word-jump{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
   #info .word-jump button{min-width:0;white-space:normal}
 }
+.trip-update-card{padding:12px 14px;margin:12px 0;background:#fff7e9;border:1px solid #e7c87f;border-radius:14px;overflow-wrap:anywhere}.trip-update-card strong{display:block}.trip-update-card p{margin:.55em 0;line-height:1.7}.goods-grid:has(>li:only-child){grid-template-columns:minmax(0,240px);justify-content:center}
 </style>
 </head>
 <body>
 <header class="topbar"><nav aria-label="日付切り替え"><a data-park="friday" href="#friday"><small>11/27（金）</small> ランド</a><a data-park="land" href="#land"><small>11/28（土）</small> ランド</a><a data-park="sea" href="#sea"><small>11/29（日）</small> シー</a><a data-park="info" href="#info">当日の使い方</a></nav></header>
 <main aria-label="ディズニー旅行のしおり"><section id="friday" data-edit-label="11/27（金）" class="friday-panel" hidden><div class="hero"><h1>Disney Land</h1><p class="date">11/27 (Fri)</p></div>
-<section class="order"><h2>11/27（金）夕方からランド</h2><ol class="timeline"><li><div class="time">夕方</div><div class="event"><h3>ランドに入園</h3></div></li><li><div class="time">入園後</div><div class="event"><h3>ウエスタンランド・アドベンチャーランド</h3><p>この2つのエリアを中心に遊ぶ。</p></div></li></ol><p><a href="#land-map">ランドの地図 ↗</a></p></section></section>
+<section class="order"><h2>11/27（金）東京着 → ボンボ → 17時ランド</h2><p class="plan-alert">1泊目は東京ベイ舞浜ホテル ファーストリゾート。17時入園までにボン・ヴォヤージュへ。買い物・食事の時刻は舞浜14時ごろ到着を想定した提案です。</p><ol class="timeline"><li><div class="time">昼過ぎ</div><div class="event"><h3>東京に到着 → 舞浜へ</h3><p>到着地・時刻に合わせて移動。下の買い物や食事の時刻は舞浜に14時ごろ到着する場合の提案。</p></div></li><li><div class="time">14:00〜14:30</div><div class="event"><h3>舞浜駅前で荷物を預ける</h3><p>ウェルカムセンター1階で、ファーストリゾートへの無料荷物配送を利用。受付8:00〜15:00。15時を過ぎる場合は先にホテルへ。</p></div></li><li><div class="time">14:30〜15:30</div><div class="event"><h3>ボン・ヴォヤージュでお土産を見る</h3><p>入園前にボンボへ寄る希望。買い物は1時間を目安に、到着時間に合わせて調整。</p></div></li><li><div class="time">15:30〜16:15</div><div class="event"><h3>早めのごはん・休憩</h3><p>お店は未定。子ども3人の食事・休憩時間を確保。</p></div></li><li><div class="time">16:15〜16:30</div><div class="event"><h3>トイレ・おむつ替え</h3><p>入園前に済ませてランド入口へ。</p></div></li><li><div class="time">16:30ごろ</div><div class="event"><h3>ランド入口へ・入園待ち</h3><p>手荷物検査と移動の時間を見て早めに。</p></div></li><li><div class="time">17:00</div><div class="event"><h3>ランドに入園</h3><p>17時から入園するチケット。</p></div></li><li><div class="time">入園後</div><div class="event"><h3>ウエスタンランド・アドベンチャーランド</h3><p>この2つのエリアを中心に遊ぶ。</p></div></li><li><div class="time">夜</div><div class="event"><h3>東京ベイ舞浜ホテル ファーストリゾート泊</h3><p>11/27の1泊目。11/28の2泊目はホテルミラコスタ。</p></div></li></ol><p><a href="https://www.maihamahotel-firstresort.jp/hotelinformation/official-hotel/" target="_blank" rel="noopener">ホテル公式・荷物配送 ↗</a> ／ <a href="#land-map">ランドの地図 ↗</a></p></section></section>
 <section id="land" data-edit-label="11/28（土）" class="day" aria-labelledby="land-title">
 <div class="hero"><span class="ribbon"><svg viewBox="0 0 126 34" aria-hidden="true" focusable="false" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"><path d="M2 8h22v22H2l5-11z" fill="#fffdfb"/><path d="M14 25l10-3v8z" fill="currentColor"/><path d="M14 4h110l-6 11 4 11H14z" fill="#fffdfb"/></svg>DAY 1</span><h1 id="land-title">Disney Land</h1><p class="date">11/28 (Sat)</p></div><nav class="view-nav" aria-label="しおりのページ">
     <a data-page="plan" href="#land">予定</a>
@@ -376,7 +377,7 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
 <ol class="timeline" aria-label="ランドの予定">
 <li data-x="493" data-y="544"><div class="time">入園後</div><div class="event"><h3>ワッフルのモバイルオーダーを取る</h3><p>グレートアメリカン・ワッフルカンパニー。デザートの受取枠を取る。</p></div></li><li data-x="710" data-y="195"><div class="time">午前</div><div class="event"><h3>トゥーンタウンへ</h3><p>ミートミッキーへ行って、トゥーンタウンで遊ぶ。</p></div></li><li class="proposal-row"><div class="time">午前</div><div class="event"><h3>先に食べる案</h3><aside class="meal-proposal"><span class="proposal-status">提案 · お姉さんの確認待ち</span>
     <h4>10:15〜10:30受取が目安　トゥモローランド・テラス</h4><p>入園後にモバオダの枠を確認して、ベイマックスの前に早めの昼食。バーガーやナゲット・ポテトなど。トゥーンタウンは切り上げ時刻を決めておく。軽食にするなら同じ時間に食べて、13:45ごろの昼食は子どもの様子で判断。午前に食べられなければ、12:10のショー後は昼食を優先して、12:45のパレードは見られる範囲で。</p><a href="#land-map-357">地図・メニューを見る ↗</a></aside></div></li><li data-x="676" data-y="321"><div class="time">11:00</div><div class="event"><h3>ベイマックスのハッピーライド</h3><p>バケパ。</p></div></li><li data-x="650" data-y="463"><div class="time">時間自由</div><div class="event"><h3>モンスターズ・インク“ライド＆ゴーシーク！”</h3><p>バケパの時間指定なし対象アトラクション枠で行く予定。</p></div></li><li data-x="676" data-y="415"><div class="time">12:00〜</div><div class="event"><h3>The D-Groovationz4 Live: Happy! Funky! Groovy! Tour</h3><p>Wordは12:00。予約画面と11/28の公式時刻は12:10（約25分）。集合時刻は券面で確認。</p></div></li><li><div class="time">ショー後</div><div class="event"><h3>昼食</h3><p>お店は未定。午前に食べられなければ、ショー後は昼食を先に。</p></div></li><li data-x="547" data-y="387"><div class="time">12:45</div><div class="event"><h3><a href="https://www.tokyodisneyresort.jp/tdl/show/detail/7003/" target="_blank" rel="noopener">トイズ・ワンダラス・クリスマス！</a></h3><p>約45分。</p></div></li><li data-x="753" data-y="263"><div class="time">候補</div><div class="event"><h3><a href="https://www.tokyodisneyresort.jp/tdl/show/detail/895/" target="_blank" rel="noopener">ミッキーのマジカルミュージックワールド</a></h3><p>約25分。10:50／12:15／13:40／15:45／17:10。</p></div></li><li data-x="547" data-y="387"><div class="time">15:25</div><div class="event"><h3><a href="https://www.tokyodisneyresort.jp/tdl/show/detail/7000/" target="_blank" rel="noopener">ディズニー・ハーモニー・イン・カラー</a></h3><p>約45分。</p></div></li><li data-x="493" data-y="544"><div class="time">受取枠</div><div class="event"><h3>デザートはワッフル</h3><p>グレートアメリカン・ワッフルカンパニー。モバオダ対応。</p></div></li><li class="proposal-row"><div class="time">夕食</div><div class="event"><h3>晩ごはん</h3><aside class="meal-proposal"><span class="proposal-status">提案 · お姉さんの確認待ち</span>
-    <h4>17:30ごろ　プラズマ・レイズ・ダイナー</h4><p>19:00のエレクトリカルパレードの前に夕食。15:45のショーを選んだ日にも合わせやすい時間。17:10の回を見るなら夕食は18:00ごろに調整。生ビールとお子様メニューあり。</p><a href="#land-map-352">地図・メニューを見る ↗</a></aside></div></li><li data-x="547" data-y="387"><div class="time">19:00</div><div class="event"><h3><a href="https://www.tokyodisneyresort.jp/tdl/show/detail/913/" target="_blank" rel="noopener">東京ディズニーランド・エレクトリカルパレード・ドリームライツ</a></h3><p>約45分。</p></div></li><li><div class="time">20:30</div><div class="event"><h3><a href="https://www.tokyodisneyresort.jp/tdl/show/detail/951/" target="_blank" rel="noopener">スターブライト・クリスマス</a></h3><p>約5分。終了後はミラコスタへ。</p></div></li>
+    <h4>17:30ごろ　プラズマ・レイズ・ダイナー</h4><p>19:00のエレクトリカルパレードの前に夕食。15:45のショーを選んだ日にも合わせやすい時間。17:10の回を見るなら夕食は18:00ごろに調整。生ビールとお子様メニューあり。</p><a href="#land-map-352">地図・メニューを見る ↗</a></aside></div></li><li data-x="547" data-y="387"><div class="time">19:00</div><div class="event"><h3><a href="https://www.tokyodisneyresort.jp/tdl/show/detail/913/" target="_blank" rel="noopener">東京ディズニーランド・エレクトリカルパレード・ドリームライツ</a></h3><p>約45分。</p></div></li><li><div class="time">20:30</div><div class="event"><h3><a href="https://www.tokyodisneyresort.jp/tdl/show/detail/951/" target="_blank" rel="noopener">スターブライト・クリスマス</a></h3><p>約5分。終了後はミラコスタへ。</p><aside class="trip-update-card"><strong>ミラコスタ到着後に25周年バッジ引換</strong><p>2階「ミッキランジェロ・ギフト」のレジで、オリジナルグッズ引換券を提示。通常8:00〜22:00（当日の営業時間を確認）。翌日のシーから着ける予定。在庫は店頭で確認。</p><p>28日のランドから着けたい場合は、モンスターズ・インクに乗る前後にカンパニーストアで先に引換。</p><a href="#goods-exchange" data-open-goods>引換場所一覧を見る ↗</a></aside></div></li>
 </ol>
 </div>
 <section class="drink-section" data-view="drinks" id="land-drinks" aria-labelledby="land-drink-title">
@@ -446,22 +447,18 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
 <dialog id="map-dialog" aria-label="拡大マップ"><form method="dialog"><span>スワイプして地図を移動</span><button autofocus>閉じる</button></form><div class="map-scroll"><img alt=""></div></dialog>
 <dialog id="vp-goods" class="welcome goods-dialog" aria-labelledby="vp-goods-title">
   <form method="dialog" class="welcome-card">
-    <div class="welcome-head"><div><p>バケーションパッケージ</p><h2 id="vp-goods-title">もらうグッズ、決めた？</h2></div>
+    <div class="welcome-head"><div><p>バケーションパッケージ</p><h2 id="vp-goods-title">グッズは25周年バッジに決定！</h2></div>
       <button class="goods-close" value="later" aria-label="閉じる">閉じる ×</button></div>
     <div class="welcome-scroll goods-scroll">
-      <p>現地のレジで引換券を見せて、<strong>券1枚につき好きなグッズを1点</strong>選べます。</p>
+      <p><strong>選んだグッズはジュビリーバッジ（東京ディズニーシー25周年・バケパ限定）です。</strong></p><p>指定引換店舗のレジで引換券を提示。券1枚につき1点。在庫があれば、下のどの引換店舗でも受け取れます。</p>
+      <div class="trip-update-card"><strong>引換予定は11/28（土）ミラコスタ到着後</strong><p>2階ミッキランジェロ・ギフトで受け取り、翌日のシーで着ける。通常8:00〜22:00。28日から着けたい場合はランドのモンスターズ・インク・カンパニーストアへ。</p></div>
+      <p>ボン・ヴォヤージュとファーストリゾートは引換対象外。引換券の有効日を確認して利用。</p>
       <details class="goods-catalog">
-        <summary>グッズの写真・引換場所を見る</summary>
-        <h3>11/28・29の候補</h3>
-        <ul class="goods-grid">
-          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_10.jpg" loading="lazy"><strong>ジュビリーバッジ</strong><small>ディズニーシー25周年</small></li>
-          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_04.jpg" loading="lazy"><strong>ショルダーバッグ</strong></li>
-          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_01.jpg" loading="lazy"><strong>くっつきぬいぐるみ</strong></li>
-          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_06.jpg" loading="lazy"><strong>ディズニービークルコレクション〈トミカ〉</strong></li>
-          <li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_08.jpg" loading="lazy"><strong>ブランケット（収納バッグ付き）</strong><small>11/8から引換</small></li>
-        </ul>
-        <h3>引換場所</h3>
-        <p class="goods-stay"><strong>泊まるホテルで引換</strong><br><a href="https://www.tokyodisneyresort.jp/hotel/dhm/facility.html" target="_blank" rel="noopener">ミッキランジェロ・ギフト</a>（ミラコスタ）</p>
+        <summary>決定したバッジの写真・引換場所を見る</summary>
+        <h3>決定したグッズ</h3>
+        <ul class="goods-grid"><li><img alt="" src="https://media2.tokyodisneyresort.jp/home/vp/guide/goods/goods_10.jpg" loading="lazy"><strong>ジュビリーバッジ</strong><small>ディズニーシー25周年</small></li></ul>
+        <h3 id="goods-exchange">ジュビリーバッジの引換場所</h3>
+        <p class="goods-stay"><strong>11/28夜の引換予定</strong><br><a href="https://www.tokyodisneyresort.jp/hotel/dhm/facility.html" target="_blank" rel="noopener">ミッキランジェロ・ギフト</a>（ミラコスタ）</p>
         <ul class="goods-places">
           <li><strong>ランド</strong> <a href="https://www.tokyodisneyresort.jp/tdl/shop/detail/558/" target="_blank" rel="noopener">モンスターズ・インク・カンパニーストア</a></li>
           <li><strong>シー</strong> <a href="https://www.tokyodisneyresort.jp/tds/shop/detail/616/" target="_blank" rel="noopener">ヴィラ・ドナルド・ホームショップ</a>／<a href="https://www.tokyodisneyresort.jp/tds/shop/detail/720/" target="_blank" rel="noopener">ファンタジースプリングス・ギフト</a></li>
@@ -473,7 +470,7 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
         <a href="https://www.tokyodisneyresort.jp/vp/guide/goods/" target="_blank" rel="noopener">公式のグッズ・引換店舗 ↗</a>
       </details>
     </div>
-    <div class="welcome-footer goods-footer"><button value="later" autofocus>あとで見る</button><button value="decided">決めた！</button></div>
+    <div class="welcome-footer goods-footer"><button value="later" autofocus>あとで見る</button><button value="decided">確認した</button></div>
   </form>
 </dialog>
 
@@ -507,6 +504,13 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
 
 <script>
 const editDialog=document.querySelector('#edit-plan');
+document.querySelectorAll('[data-open-goods]').forEach(link=>{
+  link.addEventListener('click',event=>{
+    event.preventDefault();
+    showGoods(true);
+    document.getElementById('goods-exchange').scrollIntoView({block:'start'});
+  });
+});
 const planKey='disney-guide-edited-plan-v1';
 const planSections=['friday','land','sea'].map(id=>document.querySelector('#'+id));
 let editSection;
@@ -544,6 +548,13 @@ function parseChanges(raw) {
       });
     }
     if(normalized.length) result[section.id]=normalized;
+  }
+  const oldFriday = result.friday;
+  if(oldFriday?.length===2 &&
+     oldFriday[0].time==='夕方' && oldFriday[0].title==='ランドに入園' && !oldFriday[0].note &&
+     oldFriday[1].time==='入園後' && oldFriday[1].title==='ウエスタンランド・アドベンチャーランド' &&
+     oldFriday[1].note==='この2つのエリアを中心に遊ぶ。') {
+    delete result.friday;
   }
   return result;
 }
@@ -1402,7 +1413,7 @@ welcome.innerHTML=`<form method="dialog" class="welcome-card">
       <button type="button" data-day="land">11/28（土）ランド</button>
       <button type="button" data-day="sea">11/29（日）シー</button>
     </div>
-    <p class="preview-friday">11/27（金）は夕方からランド。ウエスタンランドとアドベンチャーランドへ。</p>
+    <p class="preview-friday">11/27（金）は昼過ぎに東京着。ボンボに寄って17時からランド。1泊目はファーストリゾート。</p>
     <div class="playback-player"></div>
     <div class="playback-nav"><b>しおりの使い方</b><p>「予定」で時刻とモバオダ枠。「地図・ごはん」でお店の場所。「ドリンク」でフリドリ、「当日の使い方」でDPA・予約手順を確認。</p></div>
   </div>
@@ -1443,10 +1454,10 @@ welcome.addEventListener('close',()=>{
 try { hide.checked=localStorage.getItem(welcomeKey)==='yes'; } catch {}
 const goodsDialog = document.querySelector('#vp-goods');
 const goodsKey = 'disney-guide-goods-decided';
-let goodsDecided = false;
+let goodsDecided = true;
 let goodsPromptShown = false;
 let firstReplay = false;
-try { goodsDecided = localStorage.getItem(goodsKey) === 'yes'; } catch {}
+// The selected gift is confirmed for this itinerary.
 function showGoods(expand) {
   goodsPromptShown = true;
   goodsDialog.returnValue = '';
@@ -1465,7 +1476,7 @@ parks.forEach(day => {
   wrapper.className = 'plan-goods';
   const button = document.createElement('button');
   button.type = 'button';
-  button.textContent = 'バケパのグッズ・引換場所';
+  button.textContent = '25周年バッジ・引換場所';
   button.setAttribute('aria-haspopup','dialog');
   button.addEventListener('click',()=>showGoods(true));
   wrapper.append(button);
