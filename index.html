@@ -185,6 +185,7 @@ dialog.welcome{position:fixed;inset:0;margin:auto;width:min(560px,calc(100% - 24
 .featured-drink button[aria-pressed=true]{background:var(--ink);color:white}
 .standard-drinks{margin-top:5px;font-size:.79rem;color:#4b3e47}
 .standard-drinks b{margin-right:4px;color:var(--ink)}
+.paper-pack-drink{white-space:nowrap}
 .paper-pack-mark{display:inline-grid;place-items:center;box-sizing:border-box;width:1.45em;height:1.45em;border:1px solid currentColor;border-radius:50%;font-weight:700;line-height:1;vertical-align:middle}
 .place-detail{padding:7px 9px}
 .place-detail .meal-body{padding:0}
@@ -1088,11 +1089,15 @@ parks.forEach(day => {
   const paperPackMark = '<span class="paper-pack-mark" aria-label="紙パックあり" role="img">パ</span>';
   function drinksAt(place) {
     const containers = [
-      place.paperPacks?.length ? `<p class="standard-drinks"><b>紙パック</b> ${place.paperPacks.join('、')}</p>` : '',
       place.bottles?.length ? `<p class="standard-drinks"><b>ペットボトル</b> ${place.bottles.join('、')}</p>` : '',
     ].join('');
+    const standardDrinks = [
+      place.regular,
+      ...(place.paperPacks ?? []).map(name =>
+        `<span class="paper-pack-drink">${paperPackMark} ${name === 'ミルク' ? '牛乳' : name}</span>`),
+    ].filter(Boolean).join('・');
     return specialAt(place.id).map(drinkMarkup).join('') + containers +
-      (place.regular ? `<p class="standard-drinks"><b>定番</b> ${place.paperPacks?.length ? paperPackMark + ' ' : ''}${place.regular}</p>` :
+      (standardDrinks ? `<p class="standard-drinks"><b>定番</b> ${standardDrinks}</p>` :
         '<p class="standard-drinks">そのほかの対象ドリンクは当日アプリで確認。</p>');
   }
 
