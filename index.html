@@ -962,12 +962,18 @@ function photo(url, name, link) {
   return url ? `<a class="food-photo" href="${link}" target="_blank" rel="noopener"><span>公式写真 ↗</span><img src="${url}" alt="${name}の公式写真" loading="lazy" referrerpolicy="no-referrer"></a>` : '';
 }
 
+const hotDrinkMark = '<span class="paper-pack-mark" aria-label="ホット" role="img">H</span>';
+function labeledDrink(name) {
+  return /ホット|^あんコーヒー|^ウィンナコーヒー/.test(name)
+    ? `<span class="paper-pack-drink">${hotDrinkMark}</span> ${name}` : name;
+}
+
 function drinkMarkup(drink) {
   const key = String(drink.id);
   const isTried = tried.has(key);
   return `<div class="featured-drink">
     ${photo(drink.photo,drink.name,resort+'/food/'+key+'/')}
-    <div><strong><span>✦ スペシャル</span> ${drink.name}</strong>
+    <div><strong><span>✦ スペシャル</span> ${labeledDrink(drink.name)}</strong>
     <button type="button" data-tried="${key}" aria-pressed="${isTried}">${isTried ? '✓ 飲んだ' : '飲んだらチェック'}</button></div></div>`;
 }
 
@@ -1090,7 +1096,7 @@ parks.forEach(day => {
   const paperPackMark = '<span class="paper-pack-mark" aria-label="紙パックあり" role="img">パ</span>';
   function drinksAt(place) {
     const containers = [
-      place.bottles?.length ? `<p class="standard-drinks"><b>ペットボトル</b> ${place.bottles.join('、')}</p>` : '',
+      place.bottles?.length ? `<p class="standard-drinks"><b>ペットボトル</b> ${place.bottles.map(labeledDrink).join('、')}</p>` : '',
     ].join('');
     const standardDrinks = [
       place.regular,
@@ -1358,7 +1364,7 @@ parks.forEach(day => {
   const areas = [...new Set(drinkLocations.map(place=>place.area).filter(Boolean))];
   const defaultArea = day.id==='land' ? 'トゥモローランド' : 'ロストリバーデルタ';
   drinkPanel.innerHTML=`<h2 id="${day.id}-drink-title">バケパのフリードリンク</h2>
-    <p class="finder-guide">一覧はエリアから近い順に並べられます。モバオダ対応店では受け取り口で券を提示。${paperPackMark} は紙パックあり。</p>
+    <p class="finder-guide">一覧はエリアから近い順に並べられます。モバオダ対応店では受け取り口で券を提示。${paperPackMark} は紙パック、${hotDrinkMark} はホット。</p>
     ${containerDrinkGuide[day.id]}
     <div class="finder-tools"><label>今いるエリア <select><option value="">すべてのエリア</option>${areas.map(area=>`<option${area===defaultArea?' selected':''}>${area}</option>`).join('')}</select></label>
     <label><input type="checkbox" checked> モバオダ対応店のみ</label>
