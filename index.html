@@ -370,12 +370,13 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
   #info .word-jump button{min-width:0;white-space:normal}
 }
 .trip-update-card{padding:12px 14px;margin:12px 0;background:#fff7e9;border:1px solid #e7c87f;border-radius:14px;overflow-wrap:anywhere}.trip-update-card strong{display:block}.trip-update-card p{margin:.55em 0;line-height:1.7}.goods-grid:has(>li:only-child){grid-template-columns:minmax(0,240px);justify-content:center}
+.entry-priorities{margin:.45rem 0;padding-left:1.65em}.entry-priorities li{padding-block:.2em}.entry-priorities li::marker{font-weight:700}.entry-note{font-size:.85rem}
 </style>
 </head>
 <body>
 <header class="topbar"><nav aria-label="日付切り替え"><a data-park="friday" href="#friday"><small>11/27（金）</small> ランド</a><a data-park="land" href="#land"><small>11/28（土）</small> ランド</a><a data-park="sea" href="#sea"><small>11/29（日）</small> シー</a><a data-park="info" href="#info">当日の使い方</a></nav></header>
 <main aria-label="ディズニー旅行のしおり"><section id="friday" data-edit-label="11/27（金）" class="friday-panel" hidden><div class="hero"><h1>Disney Land</h1><p class="date">11/27 (Fri)</p></div>
-<section class="order"><h2>ファーストリゾートから17時のランドへ</h2><p>舞浜に早めに着いたら、ボン・ヴォヤージュや休憩をチェックイン前後に。</p></section>
+<section class="order"><h2>ファーストリゾートから17時のランドへ</h2><p>舞浜に早めに着いたら、ボン・ヴォヤージュや休憩をチェックイン前後に。</p><h3>入園後に狙う枠</h3><ol class="entry-priorities"><li><strong>モバイルオーダー</strong>　18:00ごろ ハングリーベアかグランマ・サラ</li></ol></section>
 <ol class="timeline">
 <li><div class="time">昼過ぎ</div><div class="event"><h3>東京着 → 舞浜へ</h3><p>早く着いたら、舞浜駅のウェルカムセンターでホテルへの無料荷物配送を利用可（受付15:00まで）。</p></div></li>
 <li><div class="time">15:00</div><div class="event"><h3>東京ベイ舞浜ホテル ファーストリゾートにチェックイン</h3></div></li>
@@ -391,10 +392,18 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
     <a data-page="drinks" href="#land-drinks">ドリンク</a>
     </nav>
 <div class="plan-view" data-view="plan">
-<section class="order"><h2>入園してすぐ</h2><p>13:40のマジカルミュージックワールドと美女と野獣のDPA、15:00のワッフルのモバオダを狙う。DPAは各2,500円×4人＝各10,000円のメモ。</p><p>美女と野獣はWordに13:20案と14:20案あり。13:40のショーと重なりにくい14:20を第一候補に、購入画面で利用時間を確認。</p></section>
+<section class="order"><h2>入園後に狙う順番</h2>
+<ol class="entry-priorities">
+<li><strong>DPA（ショー・パレード）</strong>　13:40 マジカルミュージックワールド</li>
+<li><strong>スタンバイパス</strong>　必要なものがあれば</li>
+<li><strong>DPA（アトラクション）</strong>　14:20候補 美女と野獣</li>
+<li><strong>モバイルオーダー</strong>　15:00 ワッフル → 昼食はプラズマ・レイズかテラス</li>
+<li><strong>プライオリティ・シーティング</strong>　必要なら</li>
+<li><strong>ショーのエントリー受付</strong>　希望のショーがあれば</li>
+</ol><p class="entry-note">美女と野獣はWordに13:20案もあり。13:40のショーと重ならない枠を選ぶ。DPAは各10,000円（4人分）。</p></section>
 <ol class="timeline" aria-label="ランドの予定">
 <li><div class="time">出発前</div><div class="event"><h3>チェックアウト・荷物を預ける</h3><p>フロントで配送先・受取場所を確認。Wordのメモは1個800円、21:00までに受け取り。</p></div></li>
-<li><div class="time">8:45</div><div class="event"><h3>ランドに入園</h3><p>DPAとグレートアメリカン・ワッフルカンパニーの15:00のモバオダ枠を取る。</p></div></li>
+<li><div class="time">8:45</div><div class="event"><h3>ランドに入園</h3><p>上のリスト順にアプリで手配。</p></div></li>
 <li data-x="710" data-y="195"><div class="time">午前</div><div class="event"><h3>トゥーンタウンで遊ぶ・ミートミッキー</h3><p>サイン手帳を持って行く。</p></div></li>
 <li data-x="676" data-y="321"><div class="time">11:00</div><div class="event"><h3>ベイマックスのハッピーライド</h3><p>バケパ。</p></div></li>
 <li><div class="time">時間指定なし</div><div class="event"><h3>プーさん または モンスターズ・インク</h3><p>バケパの対象アトラクション枠で1つ選ぶ。</p></div></li>
@@ -432,9 +441,17 @@ dialog.edit-dialog{width:min(510px,calc(100% - 24px));border-radius:18px;box-sha
     <a data-page="drinks" href="#sea-drinks">ドリンク</a>
     </nav>
 <div class="plan-view" data-view="plan">
-<section class="order"><h2>ハッピーエントリーで入園</h2><p>8:15ごろが目安。入園時刻は通行証で確認。入園後にDPAと昼食の空きを確認。アナ雪13:00はバケパ券を先に確認し、DPAを取る場合は重複購入に注意。</p><p>ピーターパンは取れたら14:00ごろ（DPA 2,000円×4人＝8,000円）。アナ雪のDPAは2,500円×4人＝10,000円のメモ。</p></section>
+<section class="order"><h2>入園後に狙う順番</h2>
+<ol class="entry-priorities">
+<li><strong>DPA（ショー・パレード）</strong>　希望があれば</li>
+<li><strong>スタンバイパス</strong>　必要なものがあれば</li>
+<li><strong>DPA（アトラクション）</strong>　13:00 アナ雪はバケパ券を確認 → 14:00ごろ ピーターパン</li>
+<li><strong>モバイルオーダー</strong>　必要なら夕食17:30ごろ</li>
+<li><strong>レストラン予約</strong>　未予約なら11:45 ケープコッド・クックオフ（ショーダイニング）</li>
+<li><strong>ショーのエントリー受付</strong>　ダンス・ザ・グローブ！</li>
+</ol><p class="entry-note">DPAの予算（4人分） アナ雪10,000円／ピーターパン8,000円。</p></section>
 <ol class="timeline" aria-label="シーの予定">
-<li data-x="270" data-y="628"><div class="time">8:15ごろ</div><div class="event"><h3>シーに入園・トイマニ方面へ</h3><p>ハッピーエントリー。行けたらタートル・トークにも。</p></div></li>
+<li data-x="270" data-y="628"><div class="time">8:15ごろ</div><div class="event"><h3>シーに入園・トイマニ方面へ</h3><p>ハッピーエントリーの時刻は通行証で確認。行けたらタートル・トークにも。</p></div></li>
 <li data-x="443" data-y="548"><div class="time">10:30</div><div class="event"><h3>スパークリング・ジュビリー・セレブレーション</h3><p>約15分。次回14:00はピーターパン候補と重なる。</p></div></li>
 <li data-x="345" data-y="535"><div class="time">ショーの前</div><div class="event"><h3>電車で移動</h3><p>ディズニーシー・エレクトリックレールウェイ。11:00のショーに間に合うように移動。</p></div></li>
 <li data-x="492" data-y="349"><div class="time">11:00</div><div class="event"><h3>ドリームス・テイク・フライト</h3><p>バケパ。約25分。</p></div></li>
