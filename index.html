@@ -780,17 +780,20 @@ parks.forEach(day => {
   const categoryFilters = document.createElement('div');
   categoryFilters.className = 'special-filter drink-category';
   categoryFilters.setAttribute('role','group');
-  categoryFilters.setAttribute('aria-label','ドリンクの種類で探す');
+  categoryFilters.setAttribute('aria-label','ドリンクの絞り込み（複数選択可）');
   categoryFilters.innerHTML = `<button type="button" data-category="all" aria-pressed="true">すべて</button>
+    <button type="button" data-category="mobile" aria-pressed="false">モバオダ対応</button>
     <button type="button" data-category="bottles" aria-pressed="false">ペットボトルを探す</button>
     <button type="button" data-category="hot" aria-pressed="false">ホットドリンクを探す</button>
     <button type="button" data-category="paperPacks" aria-pressed="false">紙パックを探す</button>`;
   mapPanel.querySelector('.map-help').after(categoryFilters);
-  let category = 'all';
+  const selectedCategories = new Set();
   function matchesCategory(place) {
-    if (category === 'all') return true;
-    if (category === 'hot') return place.bottles?.some(isHotDrink) || specialAt(place.id).some(drink => isHotDrink(drink.name));
-    return Boolean(place[category]?.length);
+    return [...selectedCategories].every(category => {
+      if (category === 'mobile') return place.mobile;
+      if (category === 'hot') return place.bottles?.some(isHotDrink) || specialAt(place.id).some(drink => isHotDrink(drink.name));
+      return Boolean(place[category]?.length);
+    });
   }
 
   const paperPackMark = '<span class="paper-pack-mark" aria-label="紙パックあり" role="img">パ</span>';
@@ -1069,11 +1072,9 @@ parks.forEach(day => {
     <p class="finder-guide">一覧はエリアから近い順に並べられます。モバオダ対応店では受け取り口で券を提示。${paperPackMark} は紙パック、${hotDrinkMark} はホット。</p>
     ${containerDrinkGuide[day.id]}
     <div class="finder-tools"><label>今いるエリア <select><option value="">すべてのエリア</option>${areas.map(area=>`<option${area===defaultArea?' selected':''}>${area}</option>`).join('')}</select></label>
-    <label><input type="checkbox" checked> モバオダ対応店のみ</label>
     </div>
     <div class="nearby-stores"></div>`;
   const areaSelect = drinkPanel.querySelector('select');
-  const mobileOnly = drinkPanel.querySelector('input');
   const list = drinkPanel.querySelector('.nearby-stores');
   function renderFinder() {
     const area=areaSelect.value;
@@ -1081,8 +1082,8 @@ parks.forEach(day => {
     function distance(place) {
       return area ? Math.min(...center.map(origin=>Math.hypot(place.x-origin.x,place.y-origin.y))) : 0;
     }
-    drinkPanel.querySelector('.container-drinks').hidden = category !== 'all';
-    const ordered=drinkLocations.filter(place=>matchesCategory(place) && (!mobileOnly.checked || place.mobile))
+    drinkPanel.querySelector('.container-drinks').hidden = selectedCategories.size > 0;
+    const ordered=drinkLocations.filter(matchesCategory)
       .sort((a,b)=>distance(a)-distance(b) || Number(!specialAt(a.id).length)-Number(!specialAt(b.id).length));
     list.innerHTML=ordered.map(place=>`<article class="nearby-store">
       <div class="nearby-title"><div><small>${place.area} · ${place.mobile?'モバオダ対応':'モバオダ非対応'}</small><h3>${place.name}</h3></div>
@@ -1091,10 +1092,15 @@ parks.forEach(day => {
   }
   categoryFilters.addEventListener('click',event=>{
     const button=event.target.closest('[data-category]');
-    if (!button || button.dataset.category===category) return;
-    category=button.dataset.category;
-    categoryFilters.querySelectorAll('button').forEach(option=>
-      option.setAttribute('aria-pressed',String(option===button)));
+    if (!button) return;
+    const category = button.dataset.category;
+    if (category === 'all') selectedCategories.clear();
+    else if (selectedCategories.has(category)) selectedCategories.delete(category);
+    else selectedCategories.add(category);
+    categoryFilters.querySelectorAll('button').forEach(option=>{
+      const value = option.dataset.category;
+      option.setAttribute('aria-pressed',String(value === 'all' ? !selectedCategories.size : selectedCategories.has(value)));
+    });
     if (new RegExp(`^#${day.id}-map-(drink|special)-[0-9]+`).test(location.hash)) {
       history.replaceState(null,'',`#${day.id}-drinks`);
     }
@@ -1102,7 +1108,6 @@ parks.forEach(day => {
     renderFinder();
   });
   areaSelect.addEventListener('change',renderFinder);
-  mobileOnly.addEventListener('change',renderFinder);
   renderFinder();
   const pdf = document.createElement('p');
   pdf.className='resource-link';
