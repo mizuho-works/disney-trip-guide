@@ -185,6 +185,7 @@ dialog.welcome{position:fixed;inset:0;margin:auto;width:min(560px,calc(100% - 24
 .featured-drink button[aria-pressed=true]{background:var(--ink);color:white}
 .standard-drinks{margin-top:5px;font-size:.79rem;color:#4b3e47}
 .standard-drinks b{margin-right:4px;color:var(--ink)}
+.rare-mark{display:inline-block;padding:0 4px;border-radius:4px;background:#ffd84d;color:#3a2a00;font-size:.65rem;font-weight:700;line-height:1.5;white-space:nowrap}
 .paper-pack-drink{white-space:nowrap}
 .paper-pack-mark{display:inline-grid;place-items:center;box-sizing:border-box;width:1.45em;height:1.45em;border:1px solid currentColor;border-radius:50%;font-weight:700;line-height:1;vertical-align:middle}
 .place-detail{padding:7px 9px}
@@ -664,6 +665,11 @@ function labeledDrink(name, hot = isHotDrink(name)) {
     ? `<span class="paper-pack-drink">${hotDrinkMark}</span> ${name}` : name;
 }
 
+const rareDrinks = ['カルピス','ホットココア','カフェラテ','アイスカフェラテ','グアバドリンク'];
+function rareMark(name) {
+  return rareDrinks.includes(name) ? ' <span class="rare-mark">レア</span>' : '';
+}
+
 function drinkMarkup(drink) {
   const key = String(drink.id);
   const isTried = tried.has(key);
@@ -817,7 +823,7 @@ parks.forEach(day => {
       place.bottles?.length ? `<p class="standard-drinks"><b>ペットボトル</b> ${place.bottles.map(name => labeledDrink(name)).join('、')}</p>` : '',
     ].join('');
     const standardDrinks = [
-      ...(place.regular ?? []).map(name => labeledDrink(name, place.hotDrinks?.includes(name) ?? false)),
+      ...(place.regular ?? []).map(name => labeledDrink(name, place.hotDrinks?.includes(name) ?? false) + rareMark(name)),
       ...(place.paperPacks ?? []).map(name =>
         `<span class="paper-pack-drink">${paperPackMark} ${name === 'ミルク' ? '牛乳' : name}</span>`),
     ].filter(Boolean).join('・');
