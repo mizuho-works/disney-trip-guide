@@ -1189,6 +1189,18 @@ function showPage() {
 }
 addEventListener('hashchange',()=>{showPage();window.scrollTo(0,0);});
 showPage();
+// タブは常にページ上部を表示する（同じタブの再タップや直接開いた時の、地図下への移動を防ぐ）
+const tabHash=/^#(land|sea)(-(map|drinks))?$|^#(friday|monday|info)$/;
+document.addEventListener('click',event=>{
+  const link=event.target.closest('a[data-page],a[data-park]');
+  if(!link || link.hash!==location.hash) return;
+  event.preventDefault();
+  window.scrollTo({top:0,behavior:'instant'});
+});
+if(tabHash.test(location.hash.split('?')[0])){
+  const toTop=()=>window.scrollTo({top:0,behavior:'instant'});
+  addEventListener('load',()=>{toTop();setTimeout(toTop,100);},{once:true});
+}
 
 const welcome=document.createElement('dialog');
 welcome.className='welcome playback-welcome';
