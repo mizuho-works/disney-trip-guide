@@ -797,7 +797,8 @@ parks.forEach(day => {
     <button type="button" data-category="mobile" aria-pressed="false">モバオダ対応</button>
     <button type="button" data-category="bottles" aria-pressed="false">ペットボトルを探す</button>
     <button type="button" data-category="hot" aria-pressed="false">ホットドリンクを探す</button>
-    <button type="button" data-category="paperPacks" aria-pressed="false">紙パックを探す</button>`;
+    <button type="button" data-category="paperPacks" aria-pressed="false">紙パックを探す</button>
+    <button type="button" data-category="soups" aria-pressed="false">スープを探す</button>`;
   mapPanel.querySelector('.map-help').after(categoryFilters);
   const selectedCategories = new Set();
   function matchesCategory(place) {
