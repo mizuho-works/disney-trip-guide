@@ -250,6 +250,9 @@ dialog.pin-chooser[data-park=sea]{background:#f4fbff;color:#00446c}
 .pin-chooser form{position:sticky;top:0;background:inherit;gap:8px;padding:10px 12px;border-bottom:1px solid #7c65714a}
 .pin-chooser form button,.drink-category{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}
 .drink-category button{min-height:44px;white-space:normal}
+.special-filter.drink-category{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+.special-filter.drink-category button{min-width:0;min-height:40px;padding:4px 1px;font-size:clamp(.62rem,2.9vw,.76rem);line-height:1.3;white-space:nowrap}
+@media(max-width:359px){.special-filter.drink-category{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .pin-choices button{color:inherit;background:white;border:1px solid #7c657180;min-height:44px;cursor:pointer}
 .pin-choices{padding:8px 12px 12px;display:grid;gap:6px}
 .pin-choices button{border-radius:8px;text-align:left;padding:7px 9px;font:700 .88rem/1.35 var(--japanese-font)}
@@ -800,17 +803,21 @@ parks.forEach(day => {
   categoryFilters.setAttribute('role','group');
   categoryFilters.setAttribute('aria-label','ドリンクの絞り込み（複数選択可）');
   categoryFilters.innerHTML = `<button type="button" data-category="all" aria-pressed="true">すべて</button>
-    <button type="button" data-category="mobile" aria-pressed="false">モバオダ対応</button>
-    <button type="button" data-category="bottles" aria-pressed="false">ペットボトルを探す</button>
-    <button type="button" data-category="hot" aria-pressed="false">ホットドリンクを探す</button>
-    <button type="button" data-category="paperPacks" aria-pressed="false">紙パックを探す</button>
-    <button type="button" data-category="soups" aria-pressed="false">スープを探す</button>`;
+    <button type="button" data-category="mobile" aria-pressed="false">モバオダ</button>
+    <button type="button" data-category="special" aria-pressed="false">✦スペシャル</button>
+    <button type="button" data-category="rare" aria-pressed="false">レア</button>
+    <button type="button" data-category="hot" aria-pressed="false">ホット</button>
+    <button type="button" data-category="soups" aria-pressed="false">スープ</button>
+    <button type="button" data-category="bottles" aria-pressed="false">ペットボトル</button>
+    <button type="button" data-category="paperPacks" aria-pressed="false">紙パック</button>`;
   mapPanel.querySelector('.map-help').after(categoryFilters);
   const selectedCategories = new Set();
   function matchesCategory(place) {
     if (place.closed && selectedCategories.size) return false;
     return [...selectedCategories].every(category => {
       if (category === 'mobile') return place.mobile;
+      if (category === 'special') return specialAt(place.id).length > 0;
+      if (category === 'rare') return place.regular?.some(name => rareDrinks.includes(name));
       if (category === 'hot') return place.hotDrinks?.length || place.bottles?.some(isHotDrink) || specialAt(place.id).some(drink => isHotDrink(drink.name));
       return Boolean(place[category]?.length);
     });
